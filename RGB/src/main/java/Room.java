@@ -1,6 +1,11 @@
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Defines a room with necessary attributes that will later be drawn
+ * on the {@link Board#grid} with the logic to determine if two rooms are intersect
+ * @author Phuoc Ha u7454578
+ */
 public class Room {
     private int x, y, width, height;
     private List<DoorDirection> doorDirection = new ArrayList<>();
@@ -19,6 +24,13 @@ public class Room {
         this.doorDirection = doorDirection;
     }
 
+    /**
+     * Determines if two rooms are intersected. This is an important
+     * function that is used two generate random rooms to make sure that no room
+     * collapse another.
+     * @param other a room
+     * @return a boolean to indicate whether they are intersected
+     */
     boolean intersects(Room other) {
         return this.x < other.x + other.width &&
                 this.x + this.width > other.x &&

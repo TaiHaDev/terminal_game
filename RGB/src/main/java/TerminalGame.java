@@ -22,7 +22,7 @@ import java.util.Arrays;
 public class TerminalGame {
     public static void main(String[] args) throws IOException {
         int[] width = getTerminalSize();
-        System.out.println(Arrays.toString(width));
+        System.out.println("hello");
         Board board = new Board(width[1], width[0]);
         setTerminalToCharMode();
         hideCursor();
@@ -30,14 +30,18 @@ public class TerminalGame {
             board.display();
             char c = (char) System.in.read();
             switch (c) {
-                case 'q' -> {
+                case 'q' : {
                     resetTerminalToLineMode();
                     return;
                 }
-                case 'A' -> board.movePlayer(0, -1);
-                case 'B' -> board.movePlayer(0, 1);
-                case 'C' -> board.movePlayer(1, 0);
-                case 'D' -> board.movePlayer(-1, 0);
+                case 'A' : board.movePlayer(0, -1);
+                break;
+                case 'B' : board.movePlayer(0, 1);
+                break;
+                case 'C' : board.movePlayer(1, 0);
+                break;
+                case 'D' : board.movePlayer(-1, 0);
+                break;
             }
             clearScreen();
         }

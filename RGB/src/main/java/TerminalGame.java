@@ -86,15 +86,36 @@ public class TerminalGame {
      */
     public static int[] getTerminalSize() {
         int[] dimensions = new int[2];
+        String os = System.getProperty("os.name").toLowerCase();
+
         try {
-            Process sizeProcess = new ProcessBuilder("sh", "-c", "stty size < /dev/tty").start();
-            BufferedReader br = new BufferedReader(new InputStreamReader(sizeProcess.getInputStream()));
-            String[] dims = br.readLine().split(" ");
-            dimensions[0] = Integer.parseInt(dims[0]); // Height
-            dimensions[1] = Integer.parseInt(dims[1]); // Width
+            if (os.contains("win")) {
+                // Windows
+                Process sizeProcess = new ProcessBuilder("cmd", "/c", "mode").start();
+                BufferedReader br = new BufferedReader(new InputStreamReader(sizeProcess.getInputStream()));
+                String line;
+                int count = 0;
+                while ((line = br.readLine()) != null) {
+                    if (line.contains("Columns")) {
+                        dimensions[1] = Integer.parseInt(line.split(":")[1].trim());
+                    } else if (line.contains("Lines")) {
+                        dimensions[0] = Integer.parseInt(line.split(":")[1].trim());
+                    }
+                    count++;
+                    if (count >= 2) break; // We found both dimensions
+                }
+            } else {
+                // Mac and Linux
+                Process sizeProcess = new ProcessBuilder("sh", "-c", "stty size < /dev/tty").start();
+                BufferedReader br = new BufferedReader(new InputStreamReader(sizeProcess.getInputStream()));
+                String[] dims = br.readLine().split(" ");
+                dimensions[0] = Integer.parseInt(dims[0]); // Height
+                dimensions[1] = Integer.parseInt(dims[1]); // Width
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
+
         return dimensions;
     }
 }

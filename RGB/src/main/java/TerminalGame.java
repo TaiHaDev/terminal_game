@@ -2,9 +2,16 @@
 
 
 
+import com.sun.jna.Native;
+import com.sun.jna.platform.win32.Kernel32;
+import com.sun.jna.platform.win32.WinDef;
+import com.sun.jna.platform.win32.WinNT;
+import com.sun.jna.platform.win32.Wincon;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.Arrays;
 
 /**
  * Works with the terminal to draw the {@link Board} and interact with the terminal
@@ -23,17 +30,18 @@ public class TerminalGame {
             board.display();
             char c = (char) System.in.read();
             switch (c) {
-                case 'q' -> {
+                case 'q' : {
                     resetTerminalToLineMode();
                     return;
                 }
-                case 'A' -> board.movePlayer(0, -1);
-                case 'B' -> board.movePlayer(0, 1);
-                case 'C' -> board.movePlayer(1, 0);
-                case 'D' -> board.movePlayer(-1, 0);
-                case 'p' -> {
-                    shop.shopOpen();
-                }
+                case 'A' : board.movePlayer(0, -1);
+                break;
+                case 'B' : board.movePlayer(0, 1);
+                break;
+                case 'C' : board.movePlayer(1, 0);
+                break;
+                case 'D' : board.movePlayer(-1, 0);
+                break;
             }
             clearScreen();
         }
@@ -88,16 +96,51 @@ public class TerminalGame {
      */
     public static int[] getTerminalSize() {
         int[] dimensions = new int[2];
+        String os = System.getProperty("os.name").toLowerCase();
+
         try {
-            Process sizeProcess = new ProcessBuilder("sh", "-c", "stty size < /dev/tty").start();
-            BufferedReader br = new BufferedReader(new InputStreamReader(sizeProcess.getInputStream()));
-            String[] dims = br.readLine().split(" ");
-            dimensions[0] = Integer.parseInt(dims[0]); // Height
-            dimensions[1] = Integer.parseInt(dims[1]); // Width
+            if (os.contains("win")) {
+                WinNT.HANDLE h = Kernel32.INSTANCE.GetStdHandle(Kernel32.STD_OUTPUT_HANDLE);
+                Wincon.CONSOLE_SCREEN_BUFFER_INFO bufferInfo = new Wincon.CONSOLE_SCREEN_BUFFER_INFO();
+                MyKernel32.INSTANCE.GetConsoleScreenBufferInfo(h, bufferInfo);
+                dimensions[0] = bufferInfo.srWindow.Bottom - bufferInfo.srWindow.Top + 1;
+                dimensions[1] = bufferInfo.srWindow.Right - bufferInfo.srWindow.Left + 1;
+            } else {
+                Process sizeProcess = new ProcessBuilder("sh", "-c", "stty size < /dev/tty").start();
+                BufferedReader br = new BufferedReader(new InputStreamReader(sizeProcess.getInputStream()));
+                String[] dims = br.readLine().split(" ");
+                dimensions[0] = Integer.parseInt(dims[0]);  // Height
+                dimensions[1] = Integer.parseInt(dims[1]);  // Width
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
+
         return dimensions;
+    }
+    interface MyKernel32 extends Kernel32 {
+        MyKernel32 INSTANCE = Native.load("kernel32", MyKernel32.class);
+        boolean GetConsoleScreenBufferInfo(WinNT.HANDLE hConsoleOutput, Wincon.CONSOLE_SCREEN_BUFFER_INFO lpConsoleScreenBufferInfo);
+    }
+
+    public static class CONSOLE_SCREEN_BUFFER_INFO extends WinDef.RECT {
+        public COORD dwSize = new COORD();
+        public COORD dwCursorPosition = new COORD();
+        public short wAttributes;
+        public SMALL_RECT srWindow = new SMALL_RECT();
+        public COORD dwMaximumWindowSize = new COORD();
+    }
+
+    public static class COORD extends WinDef.RECT {
+        public short X;
+        public short Y;
+    }
+
+    public static class SMALL_RECT extends WinDef.RECT {
+        public short Left;
+        public short Top;
+        public short Right;
+        public short Bottom;
     }
 }
 

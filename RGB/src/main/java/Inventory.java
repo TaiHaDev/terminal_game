@@ -2,7 +2,7 @@ import java.util.ArrayList;
 
 public class Inventory {
 
-    public ArrayList<Item> inventory = new ArrayList<>();
+    public static ArrayList<Item> inventory = new ArrayList<>();
 
     public String reset(){
         Item sword = new Item("sword", "weapon to kill monsters", 0,10, 0,5);
@@ -36,7 +36,7 @@ public class Inventory {
     }
 
     //sell your things
-    private void sellItem(Item sell){
+    public void sellItem(Item sell){
         String item_name = sell.getName();
         for(Item item : inventory){
             if(item.name.equals(item_name)){
@@ -48,7 +48,7 @@ public class Inventory {
     }
 
     // method to check if the player is holding a specified key
-    private boolean youHave(Item item){
+    public boolean youHave(Item item){
         for(int i = 0; i < inventory.size(); i++){
             Item have = inventory.get(i);
             if(have.getName().equals(item.name)){
@@ -58,6 +58,18 @@ public class Inventory {
             }
         }
         return false;
+    }
+
+    public static void presentInventory(){
+        String s = "";
+        for(int i = 0; i < inventory.size(); i++){
+            Item item = inventory.get(i);
+            s += item.getName();
+            s += "   ";
+            s += item.getAmount();
+            s += "\r\n";
+        }
+        System.out.println("You have " + "\r\n" + s);
     }
 
     @Override
@@ -70,12 +82,12 @@ public class Inventory {
             s += item.getAmount();
             s += "\r\n";
         }
-        return "You have " + "\r\n" + s;
+        return "You have: " + "\r\n" + s;
     }
 
     public static void main(String[] args) {
         Inventory inventory1 = new Inventory();
         inventory1.reset();
-        System.out.println(inventory1);
+        presentInventory();
     }
 }

@@ -7,6 +7,7 @@ import com.sun.jna.platform.win32.Kernel32;
 import com.sun.jna.platform.win32.WinDef;
 import com.sun.jna.platform.win32.WinNT;
 import com.sun.jna.platform.win32.Wincon;
+import com.sun.jna.ptr.IntByReference;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -45,7 +46,6 @@ public class TerminalGame {
             }
             clearScreen();
         }
-
     }
 
 
@@ -54,8 +54,16 @@ public class TerminalGame {
      * so that a new board can be printed again on the terminal
      */
     public static void clearScreen() {
-        System.out.print("\033[2J\033[H\033[3J");
-        System.out.flush();
+        String os = System.getProperty("os.name").toLowerCase();
+        try {
+            if (os.contains("win")) {
+                new ProcessBuilder("cmd", "/c", "cls").inheritIO().start().waitFor();
+            } else {
+                System.out.print("\033[2J\033[H\033[3J");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -70,13 +78,29 @@ public class TerminalGame {
      * Setting the terminal to raw mode so input can be read straight away
      * without the need to press enter
      */
+    private static final int ENABLE_PROCESSED_INPUT = 0x0001;
+    private static final int ENABLE_LINE_INPUT      = 0x0002;
+    private static final int ENABLE_ECHO_INPUT      = 0x0004;
+
     private static void setTerminalToCharMode() {
+        String os = System.getProperty("os.name").toLowerCase();
         try {
-            Runtime.getRuntime().exec(new String[]{"sh", "-c", "stty raw -echo < /dev/tty"});
-        } catch (IOException e) {
+            if (!os.contains("win")) {
+                Runtime.getRuntime().exec(new String[]{"sh", "-c", "stty raw -echo < /dev/tty"});
+            } else {
+                WinNT.HANDLE hStdin = Kernel32.INSTANCE.GetStdHandle(Kernel32.STD_INPUT_HANDLE);
+                IntByReference mode = new IntByReference();
+                Kernel32.INSTANCE.GetConsoleMode(hStdin, mode);
+                int dwSaveFlag = mode.getValue();
+
+                int newMode = dwSaveFlag & ~(ENABLE_LINE_INPUT | ENABLE_ECHO_INPUT);
+                Kernel32.INSTANCE.SetConsoleMode(hStdin, newMode);
+            }
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
+
 
     /**
      * Exit the raw mode created by {@link TerminalGame#setTerminalToCharMode()}

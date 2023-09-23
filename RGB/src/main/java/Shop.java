@@ -24,6 +24,7 @@ public class Shop {
         Item heal_potion = new Item("potion", "healing 10 hp of the player", 10,0, 10,5);
         shop.add(sword);
         shop.add(heal_potion);
+        System.out.println("Items added: sword and heal_potion");
     }
     public void greet() {
         System.out.println("Welcome to the shop, we can provide you :" +"\r\n" + present());
@@ -47,9 +48,11 @@ public class Shop {
     }
 
     public void shopOpen(){
-        refresh();
         greet();
-        System.out.println("press the code of the item that you want");
+        System.out.println("press the code of the item that you want or press q to exit");
+    }
+    public Item getBoughtItem(int index) {
+        return shop.get(index);
     }
 
 }

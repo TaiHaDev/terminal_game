@@ -23,7 +23,6 @@ public class TerminalGame {
     public static void main(String[] args) throws IOException {
         int[] width = getTerminalSize();
         Board board = new Board(width[1], width[0]);
-        Shop shop = Shop.getInstance();
         setTerminalToCharMode();
         hideCursor();
         while (true) {
@@ -34,18 +33,39 @@ public class TerminalGame {
                     resetTerminalToLineMode();
                     return;
                 }
-                case 'A' : board.movePlayer(0, -1);
-                break;
-                case 'B' : board.movePlayer(0, 1);
-                break;
-                case 'C' : board.movePlayer(1, 0);
-                break;
-                case 'D' : board.movePlayer(-1, 0);
-                break;
+                case 'A' :
+                    board.movePlayer(0, -1);
+                    break;
+                case 'B' :
+                    board.movePlayer(0, 1);
+                    break;
+                case 'C' :
+                    board.movePlayer(1, 0);
+                    break;
+                case 'D' :
+                    board.movePlayer(-1, 0);
+                    break;
+                case 'p' :
+                    displayShopAndListener();
+                    break;
             }
             clearScreen();
         }
 
+    }
+
+    private static void displayShopAndListener() throws IOException {
+        clearScreen();
+        Shop shop = Shop.getInstance();
+        shop.shopOpen();
+        char input;
+        while((input = (char) System.in.read()) != 'q') {
+            if (Character.isDigit(input)) {
+                int chosenItemIndex = Character.getNumericValue(input);
+                Item chosenItem = shop.getBoughtItem(chosenItemIndex);
+                // TODO more logic to check valid buy and add new item to player's inventory
+            }
+        }
     }
 
 

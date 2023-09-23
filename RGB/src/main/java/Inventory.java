@@ -18,8 +18,8 @@ public class Inventory {
     private String addItem(Item add){
         String item_name = add.getName();
         for(Item item : inventory){
-            if(item.name.equals(item_name)){
-                item.amount += add.getAmount();
+            if(item.getName().equals(item_name)){
+                item.setAmount(item.getAmount() + add.getAmount());
                 return "You have got " + item.getAmount() + item_name;
             }
         }
@@ -29,8 +29,8 @@ public class Inventory {
     //add gold
     private void addGold(int num) {
         for (Item item : inventory) {
-            if (item.name.equals("gold")) {
-                item.amount += num;
+            if (item.getName().equals("gold")) {
+                item.setAmount(item.getAmount() + num);
             }
         }
     }
@@ -39,9 +39,9 @@ public class Inventory {
     public void sellItem(Item sell){
         String item_name = sell.getName();
         for(Item item : inventory){
-            if(item.name.equals(item_name)){
+            if(item.getName().equals(item_name)){
                 int num_to_sell = sell.getAmount();
-                item.amount -= num_to_sell;
+                item.setAmount( item.getAmount() - num_to_sell);
                 addGold(num_to_sell*(item.getCost()));
             }
         }
@@ -51,8 +51,8 @@ public class Inventory {
     public boolean youHave(Item item){
         for(int i = 0; i < inventory.size(); i++){
             Item have = inventory.get(i);
-            if(have.getName().equals(item.name)){
-                if(have.amount > 0){
+            if(have.getName().equals(item.getName())){
+                if(have.getAmount() > 0){
                     return true;
                 }
             }

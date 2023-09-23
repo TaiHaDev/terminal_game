@@ -105,7 +105,7 @@ public class TerminalGame {
                     ((NPC) nearbyCharacter).converse(board.getPlayer()); // Note: converse method may not need player now
                 }
                 break;
-            case 'A': // 'A' for attack
+            case 'R': // 'R' for attack
                 Character target = board.getAttackableTarget(); // method to get characters that can be attacked
                 if(target != null) {
                     board.getPlayer().attack(target);

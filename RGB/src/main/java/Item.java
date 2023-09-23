@@ -1,19 +1,16 @@
 public class Item {
     public String name;
     public String description;
-
     public int heal;
     public int damage;
-    public int defence;
     public int amount;
     public int cost;
 
-    public Item(String name, String description, int heal, int damage, int defence, int amount, int cost){
+    public Item(String name, String description, int heal, int damage, int amount, int cost){
         this.name = name;
         this.description = description;
         this.heal = heal;
         this.damage = damage;
-        this.defence = defence;
         this.amount = amount;
         this.cost = cost;
     }

@@ -16,6 +16,7 @@ public class TerminalGame {
     public static void main(String[] args) throws IOException {
         int[] width = getTerminalSize();
         Board board = new Board(width[1], width[0]);
+        Shop shop = Shop.getInstance();
         setTerminalToCharMode();
         hideCursor();
         while (true) {
@@ -30,6 +31,9 @@ public class TerminalGame {
                 case 'B' -> board.movePlayer(0, 1);
                 case 'C' -> board.movePlayer(1, 0);
                 case 'D' -> board.movePlayer(-1, 0);
+                case 'p' -> {
+                    shop.shopOpen();
+                }
             }
             clearScreen();
         }

@@ -85,9 +85,5 @@ public class Inventory {
         return "You have: " + "\r\n" + s;
     }
 
-    public static void main(String[] args) {
-        Inventory inventory1 = new Inventory();
-        inventory1.reset();
-        presentInventory();
-    }
+
 }

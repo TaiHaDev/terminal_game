@@ -1,20 +1,35 @@
 import java.util.ArrayList;
-import java.util.Scanner;
 
 public class Shop {
-    public static ArrayList<Item> shop = new ArrayList<>();
-    public String refresh(){
+    private ArrayList<Item> shop = new ArrayList<>();
+    private static Shop instance;
+
+    private Shop() {}
+
+    /**
+     * Singleton design pattern because we only need one instance of {@link Shop} within the
+     * entire game
+     * @author Phuoc Ha
+     */
+    public static Shop getInstance() {
+        if (instance == null) {
+            instance = new Shop();
+            instance.refresh();
+        }
+        return instance;
+    }
+
+    public void refresh(){
         Item sword = new Item("sword", "weapon to kill monsters", 0,10, 10,5);
         Item heal_potion = new Item("potion", "healing 10 hp of the player", 10,0, 10,5);
         shop.add(sword);
         shop.add(heal_potion);
-        return "inventory reset successfully";
     }
-    public static void great(){
+    public void greet() {
         System.out.println("Welcome to the shop, we can provide you :" +"\r\n" + present());
     }
 
-    public static String present(){
+    public String present(){
         String s = "Code     Name     Amount     Cost";
         s += "\r\n";
         for(int i = 0; i < shop.size(); i++){
@@ -31,14 +46,10 @@ public class Shop {
         return s;
     }
 
-    public static void shopOpen(){
-        Shop shop = new Shop();
-        shop.refresh();
-        shop.great();
+    public void shopOpen(){
+        refresh();
+        greet();
         System.out.println("press the code of the item that you want");
     }
 
-    public static void main(String[] args) {
-        shopOpen();
-    }
 }

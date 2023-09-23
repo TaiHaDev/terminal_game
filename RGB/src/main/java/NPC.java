@@ -12,7 +12,7 @@ public class NPC extends Character {
         this.isMerchant = isMerchant;
     }
 
-    public void converse(Player player) {
+    public void converse() {
         System.out.println(this.dialogue);
 
         if (isMerchant) {

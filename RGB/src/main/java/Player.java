@@ -25,4 +25,5 @@ public class Player extends Character {
     public void setGold(int gold) {
         this.gold = gold;
     }
+
 }

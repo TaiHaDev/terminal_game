@@ -102,13 +102,13 @@ public class TerminalGame {
             case 'E': // 'E' for interact
                 Character nearbyCharacter = board.getNearbyCharacter(); // method to get character near the player
                 if (nearbyCharacter instanceof NPC) {
-                    ((NPC) nearbyCharacter).converse(); // Note: converse method may not need player now
+                    ((NPC) nearbyCharacter).converse(board.getPlayer()); // Note: converse method may not need player now
                 }
                 break;
             case 'A': // 'A' for attack
                 Character target = board.getAttackableTarget(); // method to get characters that can be attacked
                 if(target != null) {
-                    Player.attack(target);
+                    board.getPlayer().attack(target);
                     //attackPlayer(board, target); // Moved player's attack logic to a separate method
                 }
                 break;

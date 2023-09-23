@@ -19,6 +19,7 @@ public class Board {
     private static final char DOOR_SYMBOL = '+';
     private static final char VERTICAL_BARRIER = '-';
     private static final char HORIZONTAL_BARRIER = '|';
+    private Player player;
 
 
 
@@ -226,6 +227,12 @@ public class Board {
         }
         return null; // No attackable target found
     }
+
+
+    public Player getPlayer() {
+        return this.player;
+    }
+
 
 
 

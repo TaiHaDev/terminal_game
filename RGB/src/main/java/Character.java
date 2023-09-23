@@ -9,7 +9,7 @@ public abstract class Character {
         this.attackStrength = attackStrength;
     }
 
-    public static void attack(Character target) {
+    public void attack(Character target) {
         target.decreaseHealth(this.attackStrength);
     }
 

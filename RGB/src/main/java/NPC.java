@@ -12,7 +12,7 @@ public class NPC extends Character {
         this.isMerchant = isMerchant;
     }
 
-    public void converse() {
+    public void converse(Player player) {
         System.out.println(this.dialogue);
 
         if (isMerchant) {
@@ -31,7 +31,7 @@ public class NPC extends Character {
             if ("yes".equals(response)) {
                 if (player.getGold() >= 10) {
                     player.setGold(player.getGold() - 10);
-                    //potion restores 50 health points
+                    // Let's say a potion restores 50 health points
                     player.setHealth(player.getHealth() + 50);
                     System.out.println("You've bought a health potion! 50 health has been restored.");
                 } else {
@@ -42,6 +42,7 @@ public class NPC extends Character {
             }
         }
     }
+
 
 
     public String getDialogue() {

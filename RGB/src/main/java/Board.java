@@ -1,6 +1,6 @@
-import java.util.ArrayList;
+import java.awt.*;
+import java.util.*;
 import java.util.List;
-import java.util.Random;
 
 /**
  * Defines a board that represents the game state of the roguelike game
@@ -10,6 +10,7 @@ import java.util.Random;
  */
 public class Board {
     private final char[][] grid;
+    private Map<Point, Character> charactersMap = new HashMap<>();
     private int playerX;
     private int playerY;
     private GameStat gameStat = new GameStat(100, 0, 10, 10);
@@ -194,4 +195,40 @@ public class Board {
         }
         return res;
     }
+
+    public Character getNearbyCharacter() {
+
+        // Check tiles around (playerX, playerY) for characters
+        for (int i = playerX - 1; i <= playerX + 1; i++) {
+            for (int j = playerY - 1; j <= playerY + 1; j++) {
+                if (i >= 0 && i < grid.length && j >= 0 && j < grid[i].length) { // Check boundaries
+                    if (grid[i][j] == 'N') { // Found an NPC
+                        return charactersMap.get(new Point(i, j)); // Return the actual Character object
+                    }
+                }
+            }
+        }
+        return null; // no nearby character found
+    }
+
+    public Character getAttackableTarget() {
+
+        // Check tiles around (playerX, playerY) for potential targets
+        for (int i = playerX - 1; i <= playerX + 1; i++) {
+            for (int j = playerY - 1; j <= playerY + 1; j++) {
+                // Check boundaries and ensure it's not the player's position
+                if (i >= 0 && i < grid.length && j >= 0 && j < grid[i].length && !(i == playerX && j == playerY)) {
+                    if (grid[i][j] == 'N') { // Found an NPC which is a potential target
+                        return charactersMap.get(new Point(i, j)); // Return the actual Character object
+                    }
+                }
+            }
+        }
+        return null; // No attackable target found
+    }
+
+
+
+
+
 }

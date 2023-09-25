@@ -19,6 +19,8 @@ public class Board {
     private static final char DOOR_SYMBOL = '+';
     private static final char VERTICAL_BARRIER = '-';
     private static final char HORIZONTAL_BARRIER = '|';
+    private static final char NPC_SYMBOL = 'N';
+
     private Player player;
 
 
@@ -88,6 +90,18 @@ public class Board {
                     }
                 }
             }
+            // create NPC
+            randomlyCreateNPC(r+1, c+1);
+
+        }
+    }
+
+    private void randomlyCreateNPC(int row, int col) {
+        Random random = new Random();
+        int randomNumber = random.nextInt(2);
+        if (randomNumber == 0) {
+            grid[row][col] = NPC_SYMBOL;
+            charactersMap.put(new Point(row, col), new NPC("NPC", 0, 0, "Hi, I am a merchant", true));
         }
     }
 
@@ -198,12 +212,11 @@ public class Board {
     }
 
     public Character getNearbyCharacter() {
-
         // Check tiles around (playerX, playerY) for characters
         for (int i = playerX - 1; i <= playerX + 1; i++) {
             for (int j = playerY - 1; j <= playerY + 1; j++) {
                 if (i >= 0 && i < grid.length && j >= 0 && j < grid[i].length) { // Check boundaries
-                    if (grid[i][j] == 'N') { // Found an NPC
+                    if (grid[i][j] == NPC_SYMBOL) { // Found an NPC
                         return charactersMap.get(new Point(i, j)); // Return the actual Character object
                     }
                 }

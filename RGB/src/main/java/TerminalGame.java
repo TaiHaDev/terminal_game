@@ -32,6 +32,7 @@ public class TerminalGame {
                 case 'D' -> board.movePlayer(-1, 0);
                 default -> handleInteraction(board, c);
             }
+            handleInteraction(board, c);
             clearScreen();
         }
 
@@ -77,6 +78,10 @@ public class TerminalGame {
             e.printStackTrace();
         }
     }
+    private static void removeLastPrintLine() {
+        System.out.print("\033[1A");  // Move up
+        System.out.print("\033[K");  // Clear line
+    }
 
     /**
      * Acquires the size of the terminal from OS to create suitable
@@ -99,13 +104,13 @@ public class TerminalGame {
 
     private static void handleInteraction(Board board, char input) {
         switch (input) {
-            case 'E': // 'E' for interact
+            case 'e': // 'E' for interact
                 Character nearbyCharacter = board.getNearbyCharacter(); // method to get character near the player
                 if (nearbyCharacter instanceof NPC) {
                     ((NPC) nearbyCharacter).converse(board.getPlayer()); // Note: converse method may not need player now
                 }
                 break;
-            case 'R': // 'R' for attack
+            case 'r': // 'R' for attack
                 Character target = board.getAttackableTarget(); // method to get characters that can be attacked
                 if(target != null) {
                     board.getPlayer().attack(target);

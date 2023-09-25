@@ -1,15 +1,15 @@
-public abstract class Character {
+public abstract class GameCharacter {
     private String name;
     private int health;
     private int attackStrength;
 
-    public Character(String name, int health, int attackStrength) {
+    public GameCharacter(String name, int health, int attackStrength) {
         this.name = name;
         this.health = health;
         this.attackStrength = attackStrength;
     }
 
-    public void attack(Character target) {
+    public void attack(GameCharacter target) {
         target.decreaseHealth(this.attackStrength);
     }
 

@@ -10,7 +10,7 @@ import java.util.List;
  */
 public class Board {
     private final char[][] grid;
-    private Map<Point, Character> charactersMap = new HashMap<>();
+    private Map<Point, GameCharacter> charactersMap = new HashMap<>();
     private int playerX;
     private int playerY;
     private GameStat gameStat = new GameStat(100, 0, 10, 10);
@@ -214,7 +214,7 @@ public class Board {
         return res;
     }
 
-    public Character getNearbyCharacter() {
+    public GameCharacter getNearbyCharacter() {
         // Check tiles around (playerX, playerY) for characters
         for (int i = playerX - 1; i <= playerX + 1; i++) {
             for (int j = playerY - 1; j <= playerY + 1; j++) {
@@ -228,7 +228,7 @@ public class Board {
         return null; // no nearby character found
     }
 
-    public Character getAttackableTarget() {
+    public GameCharacter getAttackableTarget() {
 
         // Check tiles around (playerX, playerY) for potential targets
         for (int i = playerX - 1; i <= playerX + 1; i++) {

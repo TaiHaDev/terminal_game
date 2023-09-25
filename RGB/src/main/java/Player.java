@@ -1,4 +1,4 @@
-public class Player extends Character {
+public class Player extends GameCharacter {
     private int gold;
 
     public Player(String name, int health, int attackStrength, int startingGold) {

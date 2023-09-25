@@ -1,8 +1,6 @@
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 
-public class NPC extends Character {
+public class NPC extends GameCharacter {
     private String dialogue;
     private boolean isMerchant;
 

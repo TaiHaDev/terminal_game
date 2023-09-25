@@ -30,6 +30,7 @@ public class TerminalGame {
                 case 'B' -> board.movePlayer(0, 1);
                 case 'C' -> board.movePlayer(1, 0);
                 case 'D' -> board.movePlayer(-1, 0);
+                default -> handleInteraction(board, c);
             }
             clearScreen();
         }
@@ -95,5 +96,27 @@ public class TerminalGame {
         }
         return dimensions;
     }
+
+    private static void handleInteraction(Board board, char input) {
+        switch (input) {
+            case 'E': // 'E' for interact
+                Character nearbyCharacter = board.getNearbyCharacter(); // method to get character near the player
+                if (nearbyCharacter instanceof NPC) {
+                    ((NPC) nearbyCharacter).converse(board.getPlayer()); // Note: converse method may not need player now
+                }
+                break;
+            case 'R': // 'R' for attack
+                Character target = board.getAttackableTarget(); // method to get characters that can be attacked
+                if(target != null) {
+                    board.getPlayer().attack(target);
+                    //attackPlayer(board, target); // Moved player's attack logic to a separate method
+                }
+                break;
+            // Add cases for other interactions
+        }
+    }
+
+
+
 }
 

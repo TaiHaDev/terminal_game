@@ -11,14 +11,11 @@ public class NPC extends GameCharacter {
     }
 
     public void converse(Player player) {
-        System.out.println(this.dialogue);
-
+        TerminalGame.printOut(this.dialogue);
         if (isMerchant) {
             // the merchant sells a potion for 10 gold
-            System.out.println("Would you like to buy a health potion for 10 gold? (yes/no)");
-
+            TerminalGame.printOut("Would you like to buy a health potion for 10 gold? (yes/no)");
             // Read player's input from the console
-
             try {
                 char response = (char) System.in.read();
                 if (response == 'y') {
@@ -26,14 +23,14 @@ public class NPC extends GameCharacter {
                         player.setGold(player.getGold() - 10);
                         // Let's say a potion restores 50 health points
                         player.setHealth(player.getHealth() + 50);
-                        System.out.println("You've bought a health potion! 50 health has been restored.");
-
+                        TerminalGame.printOut("You've bought a health potion! 50 health has been restored.");
                     } else {
-                        System.out.println("Sorry, you don't have enough gold.");
+                        TerminalGame.printOut("Sorry, you don't have enough gold.");
                     }
                 } else {
-                    System.out.println("Maybe next time.");
+                    TerminalGame.printOut("Maybe next time.");
                 }
+                System.in.read(); // press any button to skip the conversation;
             } catch (IOException e) {
                 e.printStackTrace();
             }

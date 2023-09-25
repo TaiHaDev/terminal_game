@@ -10,10 +10,10 @@ import java.util.List;
  */
 public class Board {
     private final char[][] grid;
+    private char lastMove = ' ';
     private Map<Point, GameCharacter> charactersMap = new HashMap<>();
     private int playerX;
     private int playerY;
-    private GameStat gameStat = new GameStat(100, 0, 10, 10);
     private static final char PLAYER_SYMBOL = '*';
     private static final char EMPTY_SYMBOL = ' ';
     private static final char DOOR_SYMBOL = '+';
@@ -21,7 +21,7 @@ public class Board {
     private static final char HORIZONTAL_BARRIER = '|';
     private static final char NPC_SYMBOL = 'N';
 
-    private Player player;
+    private Player player = new Player("Explorer", 100, 10, 10);
 
 
 
@@ -47,8 +47,7 @@ public class Board {
         grid[playerY][playerX] = PLAYER_SYMBOL;
 
         // generating room to be placed in the board grid
-        List<Room> rooms = generateRandomRooms(16, 70, 15, 45, 5);
-        applyRoom(rooms);
+        List<Room> rooms = generateRandomRooms(20, width / 4, height / 4, width / 7, height / 7);        applyRoom(rooms);
     }
 
     /**
@@ -122,7 +121,7 @@ public class Board {
                 System.out.println();   // Move cursor to the next line
             }
         }
-        System.out.print(gameStat);
+        System.out.print(player.getStatInfo());
     }
 
     /**
@@ -134,10 +133,11 @@ public class Board {
         int newX = playerX + deltaX;
         int newY = playerY + deltaY;
         char cur = grid[newY][newX];
-        if (isValidMove(newX, newY) && cur != VERTICAL_BARRIER && cur != HORIZONTAL_BARRIER) {
-            grid[playerY][playerX] = EMPTY_SYMBOL;
+        if (isValidMove(newX, newY) && (cur == EMPTY_SYMBOL || cur == DOOR_SYMBOL)) {
+            grid[playerY][playerX] = lastMove;
             playerX = newX;
             playerY = newY;
+            lastMove = grid[playerY][playerX];
             grid[playerY][playerX] = PLAYER_SYMBOL;
         }
     }
@@ -222,8 +222,8 @@ public class Board {
 
     public GameCharacter getNearbyCharacter() {
         // Check tiles around (playerX, playerY) for characters
-        for (int i = playerX - 1; i <= playerX + 1; i++) {
-            for (int j = playerY - 1; j <= playerY + 1; j++) {
+        for (int i = playerY - 1; i <= playerY + 1; i++) {
+            for (int j = playerX - 1; j <= playerX + 1; j++) {
                 if (i >= 0 && i < grid.length && j >= 0 && j < grid[i].length) { // Check boundaries
                     if (grid[i][j] == NPC_SYMBOL) { // Found an NPC
                         return charactersMap.get(new Point(i, j)); // Return the actual Character object
@@ -235,7 +235,6 @@ public class Board {
     }
 
     public GameCharacter getAttackableTarget() {
-
         // Check tiles around (playerX, playerY) for potential targets
         for (int i = playerX - 1; i <= playerX + 1; i++) {
             for (int j = playerY - 1; j <= playerY + 1; j++) {

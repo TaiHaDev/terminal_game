@@ -95,6 +95,11 @@ public class TerminalGame {
             e.printStackTrace();
         }
     }
+    public static void printOut(String out) {
+        System.out.print(out);
+        System.out.println();
+        System.out.print("\r");
+    }
     private static void removeLastPrintLine() {
         System.out.print("\033[1A");  // Move up
         System.out.print("\033[K");  // Clear line

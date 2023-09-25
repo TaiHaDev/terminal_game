@@ -26,4 +26,9 @@ public class Player extends GameCharacter {
         this.gold = gold;
     }
 
+    public String getStatInfo() {
+        return "Gold=   " + gold + "    " +
+                "Hp=    " + getHealth() + "    " +
+                "Strength=  " + getAttackStrength() + "    ";
+    }
 }

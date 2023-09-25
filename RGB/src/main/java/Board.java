@@ -76,16 +76,19 @@ public class Board {
             // create door for the room in the grid
             for (DoorDirection doorDirection : room.getDoorDirection()) {
                 switch (doorDirection) {
-                    case TOP -> {
+                    case TOP : {
                         grid[r][c + roomWidth / 2] = DOOR_SYMBOL;
+                        break;
                     }
-                    case BOTTOM -> {
+                    case BOTTOM : {
                         grid[r + roomHeight][c + roomWidth / 2] = DOOR_SYMBOL;
+                        break;
                     }
-                    case LEFT -> {
+                    case LEFT : {
                         grid[r + roomHeight / 2][c] = DOOR_SYMBOL;
+                        break;
                     }
-                    default -> {
+                    default : {
                         grid[r + roomHeight / 2][c  + roomWidth] = DOOR_SYMBOL;
                     }
                 }

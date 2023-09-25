@@ -5,6 +5,7 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.Arrays;
 
 /**
  * Works with the terminal to draw the {@link Board} and interact with the terminal
@@ -15,6 +16,7 @@ import java.io.InputStreamReader;
 public class TerminalGame {
     public static void main(String[] args) throws IOException {
         int[] width = getTerminalSize();
+        System.out.println(Arrays.toString(width));
         Board board = new Board(width[1], width[0]);
         setTerminalToCharMode();
         hideCursor();
@@ -30,10 +32,23 @@ public class TerminalGame {
                 case 'B' -> board.movePlayer(0, 1);
                 case 'C' -> board.movePlayer(1, 0);
                 case 'D' -> board.movePlayer(-1, 0);
-                default -> handleInteraction(board, c);
             }
-            handleInteraction(board, c);
             clearScreen();
+        }
+
+    }
+
+    private static void displayShopAndListener() throws IOException {
+        clearScreen();
+        Shop shop = Shop.getInstance();
+        shop.shopOpen();
+        char input;
+        while((input = (char) System.in.read()) != 'q') {
+            if (Character.isDigit(input)) {
+                int chosenItemIndex = Character.getNumericValue(input);
+                Item chosenItem = shop.getBoughtItem(chosenItemIndex);
+                // TODO more logic to check valid buy and add new item to player's inventory
+            }
         }
 
     }
@@ -99,6 +114,7 @@ public class TerminalGame {
         } catch (Exception e) {
             e.printStackTrace();
         }
+
         return dimensions;
     }
 

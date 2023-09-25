@@ -142,6 +142,12 @@ public class Board {
         }
     }
 
+    /**
+     * checking if we are moving out of bound
+     * @param x x-coordinate
+     * @param y y-coordinate
+     * @return boolean to indicate if the move is valid
+     */
     private boolean isValidMove(int x, int y) {
         return x >= 0 && x < grid[0].length && y >= 0 && y < grid.length;
     }

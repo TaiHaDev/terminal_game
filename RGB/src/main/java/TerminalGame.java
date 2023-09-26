@@ -45,6 +45,10 @@ public class TerminalGame {
 
     }
 
+    /**
+     *
+     * @param board read teh current board and figure out possible tips that should provided to the user
+     */
     public static void checkState(Board board){
         if(board.getPlayer().getHealth() < 50){
             System.out.println("find a merchant to but potion");

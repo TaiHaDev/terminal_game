@@ -35,6 +35,12 @@ public class TerminalGame {
                 case 'D' -> board.movePlayer(-1, 0);
                 case 'p' -> displayShopAndListener();
              }
+            while(board.getPlayer().getHealth() < 50){
+                System.out.println("find a merchant to but potion");
+            }
+            while(board.getNearbyCharacter() != null){
+                System.out.println("press E to fire the monster");
+            }
             handleInteraction(board, c);
             if (operationalMove.indexOf(c) != -1) { // monster only moves on suitable input
                 board.monsterMoving();

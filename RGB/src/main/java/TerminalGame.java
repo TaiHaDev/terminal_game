@@ -14,6 +14,7 @@ import java.util.Arrays;
  * @author Phuoc Ha u7454578
  */
 public class TerminalGame {
+    public static String operationalMove = "ABCDe"; // moving or fighting
     public static void main(String[] args) throws IOException {
         int[] width = getTerminalSize();
         System.out.println(Arrays.toString(width));
@@ -35,6 +36,9 @@ public class TerminalGame {
                 case 'p' -> displayShopAndListener();
              }
             handleInteraction(board, c);
+            if (operationalMove.indexOf(c) != -1) { // monster only moves on suitable input
+                board.monsterMoving();
+            }
             clearScreen();
         }
 

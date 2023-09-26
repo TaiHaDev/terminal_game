@@ -94,8 +94,69 @@ public class Board {
             }
             // create NPC
             randomlyCreateNPC(r+1, c+1);
-
+            // generate monster in room
+            createMonster(r, c, roomHeight, roomWidth);
         }
+    }
+
+    private void createMonster(int r, int c, int roomHeight, int roomWidth) {
+        int newRow = r + roomHeight / 2;
+        int newCol = c + roomWidth / 2;
+        if (newRow == playerY && newCol == playerX) return;
+        Monster monster;
+        int randomNumber = new Random().nextInt(3);
+        if (randomNumber == 0) {
+            monster = Monster.createMonster(Monster.Difficulty.Easy);
+        } else if (randomNumber == 1) {
+            monster = Monster.createMonster(Monster.Difficulty.Medium);
+        } else {
+            monster = Monster.createMonster(Monster.Difficulty.Hard);
+        }
+        grid[newRow][newCol] = monster.getName().charAt(0);
+        charactersMap.put(new Point(newRow, newCol), monster);
+    }
+
+    /**
+     * Make monster randomly move in one of 4 directions: top, bottom, left, right
+     */
+    public void monsterMoving() {
+        List<Point> toRemove = new ArrayList<>();
+        Map<Point, GameCharacter> toAdd = new HashMap<>();
+
+        for (Map.Entry<Point, GameCharacter> entry : charactersMap.entrySet()) {
+            Point curPoint = entry.getKey();
+            GameCharacter character = entry.getValue();
+
+
+            if (character instanceof Monster monster) {
+                int randomNumber = new Random().nextInt(4);
+                int newRow = curPoint.x;
+                int newCol = curPoint.y;
+
+                if (randomNumber == 0) {
+                    newRow++;
+                } else if (randomNumber == 1) {
+                    newRow--;
+                } else if (randomNumber == 2) {
+                    newCol++;
+                } else {
+                    newCol--;
+                }
+                if (isValidMove(newCol, newRow) && grid[newRow][newCol] == ' ') { // only allows the monster to move within the room
+                    grid[curPoint.x][curPoint.y] = EMPTY_SYMBOL;
+                    grid[newRow][newCol] = monster.getName().charAt(0);
+                    toRemove.add(curPoint);
+                    toAdd.put(new Point(newRow, newCol), monster);
+                }
+
+            }
+        }
+
+        // Now apply the changes
+        for (Point point : toRemove) {
+            charactersMap.remove(point);
+        }
+        charactersMap.putAll(toAdd);
     }
 
     private void randomlyCreateNPC(int row, int col) {
@@ -132,14 +193,18 @@ public class Board {
     public void movePlayer(int deltaX, int deltaY) {
         int newX = playerX + deltaX;
         int newY = playerY + deltaY;
-        char cur = grid[newY][newX];
-        if (isValidMove(newX, newY) && (cur == EMPTY_SYMBOL || cur == DOOR_SYMBOL)) {
+        if (isValidMove(newX, newY) && isValidDestination(newX, newY)) {
             grid[playerY][playerX] = lastMove;
             playerX = newX;
             playerY = newY;
             lastMove = grid[playerY][playerX];
             grid[playerY][playerX] = PLAYER_SYMBOL;
         }
+    }
+
+    private boolean isValidDestination(int newX, int newY) {
+        char cur = grid[newY][newX];
+        return cur == EMPTY_SYMBOL || cur == DOOR_SYMBOL;
     }
 
     /**

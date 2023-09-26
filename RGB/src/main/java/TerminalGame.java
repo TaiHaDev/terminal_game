@@ -18,7 +18,8 @@ public class TerminalGame {
     public static void main(String[] args) throws IOException {
         int[] width = getTerminalSize();
         System.out.println(Arrays.toString(width));
-        Board board = new Board(width[1], width[0]);
+        Board board = new Board(100, 100);
+        int pressCount = 0;
         setTerminalToCharMode();
         hideCursor();
         while (true) {
@@ -29,13 +30,17 @@ public class TerminalGame {
                     resetTerminalToLineMode();
                     return;
                 }
-                case 'A' -> board.movePlayer(0, -1);
-                case 'B' -> board.movePlayer(0, 1);
-                case 'C' -> board.movePlayer(1, 0);
-                case 'D' -> board.movePlayer(-1, 0);
+                case 'A' -> {board.movePlayer(0, -1);
+                    pressCount++;}
+                case 'B' -> {board.movePlayer(0, 1);
+                    pressCount++;}
+                case 'C' -> {board.movePlayer(1, 0);
+                    pressCount++;}
+                case 'D' -> {board.movePlayer(-1, 0);
+                    pressCount++;}
                 case 'p' -> displayShopAndListener();
              }
-            checkState(board);
+            checkState(board,pressCount);
             handleInteraction(board, c);
             if (operationalMove.indexOf(c) != -1) { // monster only moves on suitable input
                 board.monsterMoving();
@@ -49,13 +54,26 @@ public class TerminalGame {
      *
      * @param board read teh current board and figure out possible tips that should provided to the user
      */
-    public static void checkState(Board board){
+    public static void checkState(Board board,int pressCount){
         if(board.getPlayer().getHealth() < 50){
             System.out.println("find a merchant to but potion");
         }
-        if(board.getNearbyCharacter() != null){
-            System.out.println("press E to fire the monster");
+        else if(board.getNearbyMonster() != null){
+            System.out.println("press E to fight the monster");
         }
+        else if (pressCount != 0){
+            int num = pressCount % 2;
+            if (num == 0){
+                System.out.println("kill all monsters to win the game");
+            }
+            else {
+                System.out.println("buy weapon and potion using 'p' key");
+            }
+        }
+        else {
+            System.out.println("move using 'arrow key'");
+        }
+
     }
     private static void displayShopAndListener() throws IOException {
         clearScreen();
@@ -132,9 +150,11 @@ public class TerminalGame {
         try {
             Process sizeProcess = new ProcessBuilder("sh", "-c", "stty size < /dev/tty").start();
             BufferedReader br = new BufferedReader(new InputStreamReader(sizeProcess.getInputStream()));
-            String[] dims = br.readLine().split(" ");
-            dimensions[0] = Integer.parseInt(dims[0]); // Height
-            dimensions[1] = Integer.parseInt(dims[1]); // Width
+            if (br.readLine() != null) {
+                String[] dims = br.readLine().split(" ");
+                dimensions[0] = Integer.parseInt(dims[0]); // Height
+                dimensions[1] = Integer.parseInt(dims[1]); // Width
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -151,9 +171,9 @@ public class TerminalGame {
                 }
                 break;
             case 'r': // 'R' for attack
-                GameCharacter target = board.getAttackableTarget(); // method to get characters that can be attacked
+                GameCharacter target = board.getNearbyMonster(); // method to get characters that can be attacked
                 if(target != null) {
-                    board.getPlayer().attack(target);
+                    board.getPlayer().fight((Monster) target);
                     //attackPlayer(board, target); // Moved player's attack logic to a separate method
                 }
                 break;

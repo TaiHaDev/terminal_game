@@ -9,7 +9,7 @@ import java.util.List;
  * @author Phuoc Ha
  */
 public class Board {
-    private final char[][] grid;
+    private char[][] grid = new char[0][];;
     private char lastMove = ' ';
     private Map<Point, GameCharacter> charactersMap = new HashMap<>();
     private int playerX;
@@ -27,16 +27,18 @@ public class Board {
 
     public Board(int width, int height) {
         // height preservation for other part of the game
-        height -= 1;
-        grid = new char[height][width];
-        for (int i = 0; i < height; i++) {
-            for (int j = 0; j < width; j++) {
-                if (i == height - 1 || i == 0) {
-                    grid[i][j] = '-';
-                } else if (j == width - 1 || j == 0) {
-                    grid[i][j] = '|';
-                } else {
-                    grid[i][j] = EMPTY_SYMBOL;
+        if (height > 0 && width > 0) {
+            height -= 1;
+            grid = new char[height][width];
+            for (int i = 0; i < height; i++) {
+                for (int j = 0; j < width; j++) {
+                    if (i == height - 1 || i == 0) {
+                        grid[i][j] = '-';
+                    } else if (j == width - 1 || j == 0) {
+                        grid[i][j] = '|';
+                    } else {
+                        grid[i][j] = EMPTY_SYMBOL;
+                    }
                 }
             }
         }
@@ -47,7 +49,8 @@ public class Board {
         grid[playerY][playerX] = PLAYER_SYMBOL;
 
         // generating room to be placed in the board grid
-        List<Room> rooms = generateRandomRooms(20, width / 4, height / 4, width / 7, height / 7);        applyRoom(rooms);
+        List<Room> rooms = generateRandomRooms(20, width / 4, height / 4, width / 7, height / 7);
+        applyRoom(rooms);
     }
 
     /**
@@ -291,6 +294,20 @@ public class Board {
             for (int j = playerX - 1; j <= playerX + 1; j++) {
                 if (i >= 0 && i < grid.length && j >= 0 && j < grid[i].length) { // Check boundaries
                     if (grid[i][j] == NPC_SYMBOL) { // Found an NPC
+                        return charactersMap.get(new Point(i, j)); // Return the actual Character object
+                    }
+                }
+            }
+        }
+        return null; // no nearby character found
+    }
+
+    public GameCharacter getNearbyMonster() {
+        // Check tiles around (playerX, playerY) for characters
+        for (int i = playerY - 1; i <= playerY + 1; i++) {
+            for (int j = playerX - 1; j <= playerX + 1; j++) {
+                if (i >= 0 && i < grid.length && j >= 0 && j < grid[i].length) { // Check boundaries
+                    if (grid[i][j] == 'B' || grid[i][j] == 'Z' || grid[i][j] == 'S'  ) { // Found an Monster
                         return charactersMap.get(new Point(i, j)); // Return the actual Character object
                     }
                 }

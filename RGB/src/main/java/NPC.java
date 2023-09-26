@@ -1,8 +1,6 @@
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 
-public class NPC extends Character {
+public class NPC extends GameCharacter {
     private String dialogue;
     private boolean isMerchant;
 
@@ -13,33 +11,31 @@ public class NPC extends Character {
     }
 
     public void converse(Player player) {
-        System.out.println(this.dialogue);
-
+        TerminalGame.printOut(this.dialogue);
         if (isMerchant) {
             // the merchant sells a potion for 10 gold
-            System.out.println("Would you like to buy a health potion for 10 gold? (yes/no)");
-
+            TerminalGame.printOut("Would you like to buy a health potion for 10 gold? (yes/no)");
             // Read player's input from the console
-            BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
-            String response = "";
             try {
-                response = reader.readLine().toLowerCase().trim();
+                char response = (char) System.in.read();
+                if (response == 'y') {
+                    if (player.getGold() >= 10) {
+                        player.setGold(player.getGold() - 10);
+                        // Let's say a potion restores 50 health points
+                        player.setHealth(player.getHealth() + 50);
+                        TerminalGame.printOut("You've bought a health potion! 50 health has been restored.");
+                    } else {
+                        TerminalGame.printOut("Sorry, you don't have enough gold.");
+                    }
+                } else {
+                    TerminalGame.printOut("Maybe next time.");
+                }
+                System.in.read(); // press any button to skip the conversation;
             } catch (IOException e) {
                 e.printStackTrace();
             }
 
-            if ("yes".equals(response)) {
-                if (player.getGold() >= 10) {
-                    player.setGold(player.getGold() - 10);
-                    // Let's say a potion restores 50 health points
-                    player.setHealth(player.getHealth() + 50);
-                    System.out.println("You've bought a health potion! 50 health has been restored.");
-                } else {
-                    System.out.println("Sorry, you don't have enough gold.");
-                }
-            } else {
-                System.out.println("Maybe next time.");
-            }
+
         }
     }
 

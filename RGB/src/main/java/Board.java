@@ -10,16 +10,18 @@ import java.util.List;
  */
 public class Board {
     private final char[][] grid;
-    private Map<Point, Character> charactersMap = new HashMap<>();
+    private char lastMove = ' ';
+    private Map<Point, GameCharacter> charactersMap = new HashMap<>();
     private int playerX;
     private int playerY;
-    private GameStat gameStat = new GameStat(100, 0, 10, 10);
     private static final char PLAYER_SYMBOL = '*';
     private static final char EMPTY_SYMBOL = ' ';
     private static final char DOOR_SYMBOL = '+';
     private static final char VERTICAL_BARRIER = '-';
     private static final char HORIZONTAL_BARRIER = '|';
-    private Player player;
+    private static final char NPC_SYMBOL = 'N';
+
+    private Player player = new Player("Explorer", 100, 10, 10);
 
 
 
@@ -45,8 +47,7 @@ public class Board {
         grid[playerY][playerX] = PLAYER_SYMBOL;
 
         // generating room to be placed in the board grid
-        List<Room> rooms = generateRandomRooms(16, 70, 15, 45, 5);
-        applyRoom(rooms);
+        List<Room> rooms = generateRandomRooms(20, width / 4, height / 4, width / 7, height / 7);        applyRoom(rooms);
     }
 
     /**
@@ -91,6 +92,79 @@ public class Board {
                     }
                 }
             }
+            // create NPC
+            randomlyCreateNPC(r+1, c+1);
+            // generate monster in room
+            createMonster(r, c, roomHeight, roomWidth);
+        }
+    }
+
+    private void createMonster(int r, int c, int roomHeight, int roomWidth) {
+        int newRow = r + roomHeight / 2;
+        int newCol = c + roomWidth / 2;
+        if (newRow == playerY && newCol == playerX) return;
+        Monster monster;
+        int randomNumber = new Random().nextInt(3);
+        if (randomNumber == 0) {
+            monster = Monster.createMonster(Monster.Difficulty.Easy);
+        } else if (randomNumber == 1) {
+            monster = Monster.createMonster(Monster.Difficulty.Medium);
+        } else {
+            monster = Monster.createMonster(Monster.Difficulty.Hard);
+        }
+        grid[newRow][newCol] = monster.getName().charAt(0);
+        charactersMap.put(new Point(newRow, newCol), monster);
+    }
+
+    /**
+     * Make monster randomly move in one of 4 directions: top, bottom, left, right
+     */
+    public void monsterMoving() {
+        List<Point> toRemove = new ArrayList<>();
+        Map<Point, GameCharacter> toAdd = new HashMap<>();
+
+        for (Map.Entry<Point, GameCharacter> entry : charactersMap.entrySet()) {
+            Point curPoint = entry.getKey();
+            GameCharacter character = entry.getValue();
+
+
+            if (character instanceof Monster monster) {
+                int randomNumber = new Random().nextInt(4);
+                int newRow = curPoint.x;
+                int newCol = curPoint.y;
+
+                if (randomNumber == 0) {
+                    newRow++;
+                } else if (randomNumber == 1) {
+                    newRow--;
+                } else if (randomNumber == 2) {
+                    newCol++;
+                } else {
+                    newCol--;
+                }
+                if (isValidMove(newCol, newRow) && grid[newRow][newCol] == ' ') { // only allows the monster to move within the room
+                    grid[curPoint.x][curPoint.y] = EMPTY_SYMBOL;
+                    grid[newRow][newCol] = monster.getName().charAt(0);
+                    toRemove.add(curPoint);
+                    toAdd.put(new Point(newRow, newCol), monster);
+                }
+
+            }
+        }
+
+        // Now apply the changes
+        for (Point point : toRemove) {
+            charactersMap.remove(point);
+        }
+        charactersMap.putAll(toAdd);
+    }
+
+    private void randomlyCreateNPC(int row, int col) {
+        Random random = new Random();
+        int randomNumber = random.nextInt(2);
+        if (randomNumber == 0) {
+            grid[row][col] = NPC_SYMBOL;
+            charactersMap.put(new Point(row, col), new NPC("NPC", 0, 0, "Hi, I am a merchant", true));
         }
     }
 
@@ -108,7 +182,7 @@ public class Board {
                 System.out.println();   // Move cursor to the next line
             }
         }
-        System.out.print(gameStat);
+        System.out.print(player.getStatInfo());
     }
 
     /**
@@ -119,15 +193,26 @@ public class Board {
     public void movePlayer(int deltaX, int deltaY) {
         int newX = playerX + deltaX;
         int newY = playerY + deltaY;
-        char cur = grid[newY][newX];
-        if (isValidMove(newX, newY) && cur != VERTICAL_BARRIER && cur != HORIZONTAL_BARRIER) {
-            grid[playerY][playerX] = EMPTY_SYMBOL;
+        if (isValidMove(newX, newY) && isValidDestination(newX, newY)) {
+            grid[playerY][playerX] = lastMove;
             playerX = newX;
             playerY = newY;
+            lastMove = grid[playerY][playerX];
             grid[playerY][playerX] = PLAYER_SYMBOL;
         }
     }
 
+    private boolean isValidDestination(int newX, int newY) {
+        char cur = grid[newY][newX];
+        return cur == EMPTY_SYMBOL || cur == DOOR_SYMBOL;
+    }
+
+    /**
+     * checking if we are moving out of bound
+     * @param x x-coordinate
+     * @param y y-coordinate
+     * @return boolean to indicate if the move is valid
+     */
     private boolean isValidMove(int x, int y) {
         return x >= 0 && x < grid[0].length && y >= 0 && y < grid.length;
     }
@@ -200,13 +285,12 @@ public class Board {
         return res;
     }
 
-    public Character getNearbyCharacter() {
-
+    public GameCharacter getNearbyCharacter() {
         // Check tiles around (playerX, playerY) for characters
-        for (int i = playerX - 1; i <= playerX + 1; i++) {
-            for (int j = playerY - 1; j <= playerY + 1; j++) {
+        for (int i = playerY - 1; i <= playerY + 1; i++) {
+            for (int j = playerX - 1; j <= playerX + 1; j++) {
                 if (i >= 0 && i < grid.length && j >= 0 && j < grid[i].length) { // Check boundaries
-                    if (grid[i][j] == 'N') { // Found an NPC
+                    if (grid[i][j] == NPC_SYMBOL) { // Found an NPC
                         return charactersMap.get(new Point(i, j)); // Return the actual Character object
                     }
                 }
@@ -215,8 +299,7 @@ public class Board {
         return null; // no nearby character found
     }
 
-    public Character getAttackableTarget() {
-
+    public GameCharacter getAttackableTarget() {
         // Check tiles around (playerX, playerY) for potential targets
         for (int i = playerX - 1; i <= playerX + 1; i++) {
             for (int j = playerY - 1; j <= playerY + 1; j++) {

@@ -2,15 +2,10 @@
 
 
 
-import com.sun.jna.Native;
-import com.sun.jna.platform.win32.Kernel32;
-import com.sun.jna.platform.win32.WinDef;
-import com.sun.jna.platform.win32.WinNT;
-import com.sun.jna.platform.win32.Wincon;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.Arrays;
 
 /**
  * Works with the terminal to draw the {@link Board} and interact with the terminal
@@ -19,8 +14,10 @@ import java.io.InputStreamReader;
  * @author Phuoc Ha u7454578
  */
 public class TerminalGame {
+    public static String operationalMove = "ABCDe"; // moving or fighting
     public static void main(String[] args) throws IOException {
         int[] width = getTerminalSize();
+        System.out.println(Arrays.toString(width));
         Board board = new Board(width[1], width[0]);
         setTerminalToCharMode();
         hideCursor();
@@ -28,7 +25,7 @@ public class TerminalGame {
             board.display();
             char c = (char) System.in.read();
             switch (c) {
-                case 'q' : {
+                case 'q' -> {
                     resetTerminalToLineMode();
                     return;
                 }
@@ -36,7 +33,11 @@ public class TerminalGame {
                 case 'B' -> board.movePlayer(0, 1);
                 case 'C' -> board.movePlayer(1, 0);
                 case 'D' -> board.movePlayer(-1, 0);
-                default -> handleInteraction(board, c);
+                case 'p' -> displayShopAndListener();
+             }
+            handleInteraction(board, c);
+            if (operationalMove.indexOf(c) != -1) { // monster only moves on suitable input
+                board.monsterMoving();
             }
             clearScreen();
         }
@@ -55,6 +56,7 @@ public class TerminalGame {
                 // TODO more logic to check valid buy and add new item to player's inventory
             }
         }
+
     }
 
 
@@ -97,6 +99,15 @@ public class TerminalGame {
             e.printStackTrace();
         }
     }
+    public static void printOut(String out) {
+        System.out.print(out);
+        System.out.println();
+        System.out.print("\r");
+    }
+    private static void removeLastPrintLine() {
+        System.out.print("\033[1A");  // Move up
+        System.out.print("\033[K");  // Clear line
+    }
 
     /**
      * Acquires the size of the terminal from OS to create suitable
@@ -114,19 +125,20 @@ public class TerminalGame {
         } catch (Exception e) {
             e.printStackTrace();
         }
+
         return dimensions;
     }
 
     private static void handleInteraction(Board board, char input) {
         switch (input) {
-            case 'E': // 'E' for interact
-                Character nearbyCharacter = board.getNearbyCharacter(); // method to get character near the player
+            case 'e': // 'E' for interact
+                GameCharacter nearbyCharacter = board.getNearbyCharacter(); // method to get character near the player
                 if (nearbyCharacter instanceof NPC) {
                     ((NPC) nearbyCharacter).converse(board.getPlayer()); // Note: converse method may not need player now
                 }
                 break;
-            case 'R': // 'R' for attack
-                Character target = board.getAttackableTarget(); // method to get characters that can be attacked
+            case 'r': // 'R' for attack
+                GameCharacter target = board.getAttackableTarget(); // method to get characters that can be attacked
                 if(target != null) {
                     board.getPlayer().attack(target);
                     //attackPlayer(board, target); // Moved player's attack logic to a separate method

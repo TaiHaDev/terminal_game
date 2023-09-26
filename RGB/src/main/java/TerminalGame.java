@@ -2,6 +2,12 @@
 
 
 
+import com.sun.jna.Native;
+import com.sun.jna.platform.win32.Kernel32;
+import com.sun.jna.platform.win32.WinDef;
+import com.sun.jna.platform.win32.WinNT;
+import com.sun.jna.platform.win32.Wincon;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -22,7 +28,7 @@ public class TerminalGame {
             board.display();
             char c = (char) System.in.read();
             switch (c) {
-                case 'q' -> {
+                case 'q' : {
                     resetTerminalToLineMode();
                     return;
                 }
@@ -35,6 +41,20 @@ public class TerminalGame {
             clearScreen();
         }
 
+    }
+
+    private static void displayShopAndListener() throws IOException {
+        clearScreen();
+        Shop shop = Shop.getInstance();
+        shop.shopOpen();
+        char input;
+        while((input = (char) System.in.read()) != 'q') {
+            if (Character.isDigit(input)) {
+                int chosenItemIndex = Character.getNumericValue(input);
+                Item chosenItem = shop.getBoughtItem(chosenItemIndex);
+                // TODO more logic to check valid buy and add new item to player's inventory
+            }
+        }
     }
 
 

@@ -32,8 +32,6 @@ public class Player extends GameCharacter {
         this.decreaseHealth(monster.getAttackStrength());
         if (monster.getHealth() == 0) {
             earnGold(monster.getCoin());
-        } else {
-            this.decreaseHealth(monster.getAttackStrength());
         }
     }
     public int getGold() {

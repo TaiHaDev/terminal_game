@@ -9,7 +9,7 @@ import java.util.List;
  * @author Phuoc Ha
  */
 public class Board {
-    private final char[][] grid;
+    private char[][] grid = new char[0][];;
     private char lastMove = ' ';
     private Map<Point, GameCharacter> charactersMap = new HashMap<>();
     private int playerX;
@@ -30,16 +30,18 @@ public class Board {
 
     public Board(int width, int height) {
         // height preservation for other part of the game
-        height -= 1;
-        grid = new char[height][width];
-        for (int i = 0; i < height; i++) {
-            for (int j = 0; j < width; j++) {
-                if (i == height - 1 || i == 0) {
-                    grid[i][j] = '-';
-                } else if (j == width - 1 || j == 0) {
-                    grid[i][j] = '|';
-                } else {
-                    grid[i][j] = EMPTY_SYMBOL;
+        if (height > 0 && width > 0) {
+            height -= 1;
+            grid = new char[height][width];
+            for (int i = 0; i < height; i++) {
+                for (int j = 0; j < width; j++) {
+                    if (i == height - 1 || i == 0) {
+                        grid[i][j] = '-';
+                    } else if (j == width - 1 || j == 0) {
+                        grid[i][j] = '|';
+                    } else {
+                        grid[i][j] = EMPTY_SYMBOL;
+                    }
                 }
             }
         }
@@ -50,7 +52,8 @@ public class Board {
         grid[playerY][playerX] = PLAYER_SYMBOL;
 
         // generating room to be placed in the board grid
-        List<Room> rooms = generateRandomRooms(20, width / 4, height / 4, width / 7, height / 7);        applyRoom(rooms);
+        List<Room> rooms = generateRandomRooms(20, width / 4, height / 4, width / 7, height / 7);
+        applyRoom(rooms);
     }
 
     /**
@@ -204,7 +207,10 @@ public class Board {
                 System.out.println();   // Move cursor to the next line
             }
         }
-        System.out.print(player.getStatInfo());
+        System.out.print(player.getStatInfo()); // print out player stat
+        for (int i = 0; i < grid[0].length / 2; i++) {
+            System.out.print(" ");
+        }
     }
 
     /**
@@ -334,7 +340,6 @@ public class Board {
             for (int j = playerX - 1; j <= playerX + 1; j++) {
                 // Check boundaries and ensure it's not the player's position
                 if (i >= 0 && i < grid.length && j >= 0 && j < grid[i].length && !(i == playerX && j == playerY)) {
-                    System.out.println(i + " " + j + " " + grid[i][j]);
                     if (MONSTER_SYMBOL_COLLECTIONS.indexOf(grid[i][j]) != -1) { // Found an NPC which is a potential target
                         Point curPoint = new Point(i, j);
                         return Map.entry((Monster) charactersMap.get(curPoint), curPoint); // Return the actual Character object
@@ -372,6 +377,9 @@ public class Board {
         return count;
     }
 
+    /**
+     * Collecting
+     */
     public void collectGold() {
         int[][] neighbors = {{-1, 0}, {1, 0}, {0, 1}, {0, -1}};
         for (int[] neighbor : neighbors) {

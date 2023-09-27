@@ -19,12 +19,18 @@ public class TerminalGame {
     public static String operationalMove = "ABCDe"; // moving or fighting
     public static void main(String[] args) throws IOException {
         int[] width = getTerminalSize();
-        System.out.println(Arrays.toString(width));
-        Board board = new Board(width[1], width[0]);
+        int pressCount = 0;
+        Board board;
+        if (width[0] <= 0 || width[1] <= 0) {
+            board = new Board(100, 100);
+        } else {
+            board = new Board(width[1], width[0]);
+        }
         setTerminalToCharMode();
         hideCursor();
         while (true) {
             board.display();
+            checkState(board,pressCount);
             char c = (char) System.in.read();
             switch (c) {
                 case 'q' -> {
@@ -41,12 +47,38 @@ public class TerminalGame {
             handleInteraction(board, c);
             if (operationalMove.indexOf(c) != -1) { // monster only moves on suitable input
                 board.monsterMoving();
+                pressCount++;
             }
             clearScreen();
         }
 
     }
 
+    /**
+     *
+     * @param board read teh current board and figure out possible tips that should provide to the user
+     */
+    public static void checkState(Board board,int pressCount){
+        if(board.getPlayer().getHealth() < 50){
+            System.out.print("find a merchant to but potion");
+        }
+        else if(board.getAttackableTarget() != null){
+            System.out.print("press R to fight the monster");
+        }
+        else if (pressCount != 0){
+            int num = pressCount % 2;
+            if (num == 0){
+                System.out.print("kill all monsters to win the game");
+            }
+            else {
+                System.out.print("buy weapon and potion using 'p' key");
+            }
+        }
+        else {
+            System.out.print("move using 'arrow key'");
+        }
+
+    }
     private static void displayShopAndListener(Board board) throws IOException {
         clearScreen();
         Shop shop = Shop.getInstance();
@@ -62,7 +94,6 @@ public class TerminalGame {
             if (Character.isDigit(input)) {
                 int chosenItemIndex = Character.getNumericValue(input);
                 Item chosenItem = shop.getBoughtItem(chosenItemIndex - 1);
-                // TODO more logic to check valid buy and add new item to player's inventory
                 if (chosenItem != null) {
                     board.buyItem(chosenItem);
                 }

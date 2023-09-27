@@ -307,6 +307,13 @@ public class Board {
         return res;
     }
 
+    /**
+     * Searches for a nearby GameCharacter around the player's current position on the grid.
+     * This method scans the 3x3 area centered around the player.
+     *
+     * @return GameCharacter that is located next to the player. Returns null if no character is found.
+     * @author Michael Galland
+     */
     public GameCharacter getNearbyCharacter() {
         // Check tiles around (playerX, playerY) for characters
         for (int i = playerY - 1; i <= playerY + 1; i++) {
@@ -338,7 +345,12 @@ public class Board {
         return null; // No attackable target found
     }
 
-
+    /**
+     * Retrieves the player associated with the current game board.
+     *
+     * @return Player instance representing the main player character.
+     * @author Michael Galland
+     */
     public Player getPlayer() {
         return this.player;
     }

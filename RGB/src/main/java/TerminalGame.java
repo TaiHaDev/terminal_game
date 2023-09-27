@@ -20,7 +20,12 @@ public class TerminalGame {
     public static void main(String[] args) throws IOException {
         int[] width = getTerminalSize();
         int pressCount = 0;
-        Board board = new Board(width[1], width[0]);
+        Board board;
+        if (width[0] <= 0 || width[1] <= 0) {
+            board = new Board(100, 100);
+        } else {
+            board = new Board(width[1], width[0]);
+        }
         setTerminalToCharMode();
         hideCursor();
         while (true) {

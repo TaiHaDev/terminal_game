@@ -20,14 +20,15 @@ public class Shop {
     }
 
     public void refresh(){
-        Item sword = new Item("sword", "weapon to kill monsters", 0,10, 10,5);
-        Item heal_potion = new Item("potion", "healing 10 hp of the player", 10,0, 10,5);
+        Item sword = new Item("sword", "weapon to kill monsters", 0,20, 0,50);
+        Item spear = new Item("spear", "rudimentary weapon to fight against monsters", 0, 10, 0, 25);
+        Item gun = new Item("gun", "ultimate deadly weapon to kill monsters", 0,100, 0,500);
+        shop.add(spear);
         shop.add(sword);
-        shop.add(heal_potion);
-        System.out.println("Items added: sword and heal_potion");
+        shop.add(gun);
     }
     public void greet() {
-        System.out.println("Welcome to the shop, we can provide you :" +"\r\n" + present());
+        TerminalGame.printOut("Welcome to the shop, we can provide you :" +"\r\n" + present());
     }
 
     public String present(){
@@ -49,9 +50,12 @@ public class Shop {
 
     public void shopOpen(){
         greet();
-        System.out.println("press the code of the item that you want or press q to exit");
+        TerminalGame.printOut("press the code of the item that you want or press q to exit");
     }
     public Item getBoughtItem(int index) {
+        if (index >= shop.size()) {
+            return null;
+        }
         return shop.get(index);
     }
 

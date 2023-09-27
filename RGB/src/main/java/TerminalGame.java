@@ -2,10 +2,12 @@
 
 
 
+import java.awt.*;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Arrays;
+import java.util.Map;
 
 /**
  * Works with the terminal to draw the {@link Board} and interact with the terminal
@@ -33,7 +35,8 @@ public class TerminalGame {
                 case 'B' -> board.movePlayer(0, 1);
                 case 'C' -> board.movePlayer(1, 0);
                 case 'D' -> board.movePlayer(-1, 0);
-                case 'p' -> displayShopAndListener();
+                case 'p' -> displayShopAndListener(board);
+                case 'c' -> board.collectGold();
              }
             handleInteraction(board, c);
             if (operationalMove.indexOf(c) != -1) { // monster only moves on suitable input
@@ -44,16 +47,25 @@ public class TerminalGame {
 
     }
 
-    private static void displayShopAndListener() throws IOException {
+    private static void displayShopAndListener(Board board) throws IOException {
         clearScreen();
         Shop shop = Shop.getInstance();
         shop.shopOpen();
+        printOut(board.getPlayer().getStatInfo());
         char input;
-        while((input = (char) System.in.read()) != 'q') {
+        while(true) {
+            clearScreen();
+            shop.shopOpen();
+            printOut(board.getPlayer().getStatInfo());
+            input = (char) System.in.read();
+            if (input == 'q') break;
             if (Character.isDigit(input)) {
                 int chosenItemIndex = Character.getNumericValue(input);
-                Item chosenItem = shop.getBoughtItem(chosenItemIndex);
+                Item chosenItem = shop.getBoughtItem(chosenItemIndex - 1);
                 // TODO more logic to check valid buy and add new item to player's inventory
+                if (chosenItem != null) {
+                    board.buyItem(chosenItem);
+                }
             }
         }
 
@@ -131,23 +143,46 @@ public class TerminalGame {
 
     private static void handleInteraction(Board board, char input) {
         switch (input) {
-            case 'e': // 'E' for interact
+            case 'e' -> { // 'E' for interact
                 GameCharacter nearbyCharacter = board.getNearbyCharacter(); // method to get character near the player
                 if (nearbyCharacter instanceof NPC) {
                     ((NPC) nearbyCharacter).converse(board.getPlayer()); // Note: converse method may not need player now
                 }
-                break;
-            case 'r': // 'R' for attack
-                GameCharacter target = board.getAttackableTarget(); // method to get characters that can be attacked
-                if(target != null) {
-                    board.getPlayer().attack(target);
-                    //attackPlayer(board, target); // Moved player's attack logic to a separate method
+            }
+            case 'r' -> { // 'R' for attack
+                Map.Entry<Monster, Point> entry = board.getAttackableTarget();
+                if (entry == null) break;
+                Monster target = entry.getKey(); // method to get characters that can be attacked
+                if (target != null) {
+                    Player player = board.getPlayer();
+                    player.fight(target);
+                    if (target.getHealth() <= 0) {
+                        board.removeMonster(entry.getValue());
+                    }
+                    if (player.getHealth() <= 0 || board.countMonster() == 0) {
+                        endGame();
+                    }
                 }
-                break;
+            }
             // Add cases for other interactions
         }
     }
 
+    private static void endGame() {
+        clearScreen();
+        System.out.print("Game over! Do you want to play again ? (y/n)");
+        try {
+            char input = (char) System.in.read();
+            if (input == 'y') {
+                main(null);
+            } else if (input == 'n') {
+                System.exit(0);
+            }
+        } catch (IOException exception) {
+            exception.printStackTrace();
+        }
+
+    }
 
 
 }

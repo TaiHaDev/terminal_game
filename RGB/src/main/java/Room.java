@@ -32,10 +32,10 @@ public class Room {
      * @return a boolean to indicate whether they are intersected
      */
     boolean intersects(Room other) {
-        return this.x < other.x + other.width + 1 &&
-                this.x + this.width + 1 > other.x &&
-                this.y < other.y + other.height + 1 &&
-                this.y + this.height + 1 > other.y;
+        return this.x < other.x + other.width + 2 &&
+                this.x + this.width + 2 > other.x &&
+                this.y < other.y + other.height + 2 &&
+                this.y + this.height + 2 > other.y;
     }
 
     public int getX() {

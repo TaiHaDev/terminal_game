@@ -30,16 +30,13 @@ public class Player extends GameCharacter {
         this.gold += amount;
     }
 
-    /**
-     * Deducts gold from the player's gold count.
-     *
-     * @param amount The amount of gold to be deducted.
-     */
-    public void spendGold(int amount) {
+    public boolean spendGold(int amount) {
         if (this.gold >= amount) {
             this.gold -= amount;
+            return true;
         } else {
-            System.out.println("Not enough gold!");
+            TerminalGame.printOut("Not enough gold!");
+            return false;
         }
     }
 

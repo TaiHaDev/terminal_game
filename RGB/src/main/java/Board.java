@@ -19,7 +19,10 @@ public class Board {
     private static final char DOOR_SYMBOL = '+';
     private static final char VERTICAL_BARRIER = '-';
     private static final char HORIZONTAL_BARRIER = '|';
+    private static final char GOLD_SYMBOL = 'G';
+    private static final String MONSTER_SYMBOL_COLLECTIONS = "BSZ";
     private static final char NPC_SYMBOL = 'N';
+    private static final int GOLD_VALUE = 25;
 
     private Player player = new Player("Explorer", 100, 10, 10);
 
@@ -96,6 +99,25 @@ public class Board {
             randomlyCreateNPC(r+1, c+1);
             // generate monster in room
             createMonster(r, c, roomHeight, roomWidth);
+            // generate golds in room
+            generateGold(r, c, roomHeight, roomWidth);
+        }
+    }
+
+    private void generateGold(int r, int c, int roomHeight, int roomWidth) {
+        int totalEmptySpace = 0;
+        for (int row = r + 1; row < r + roomHeight - 1; row++) {
+            for (int col = c + 1; col < c + roomWidth - 1; col++) {
+                totalEmptySpace++;
+            }
+        }
+        Random rand = new Random();
+        for (int row = r + 1; row < r + roomHeight - 1; row++) {
+            for (int col = c + 1; col < c + roomWidth - 1; col++) {
+                if (grid[row][col] == EMPTY_SYMBOL && rand.nextInt(totalEmptySpace) < 3) { // generate maximum 4 golds for each room
+                    grid[row][col] = GOLD_SYMBOL;
+                }
+            }
         }
     }
 
@@ -306,21 +328,16 @@ public class Board {
         return null; // no nearby character found
     }
 
-    /**
-     * Searches for a GameCharacter around the player's current position on the grid that can be attacked.
-     * This method scans the 3x3 area centered around the player and excludes the center tile (player's position).
-     *
-     * @return GameCharacter that is located next to the player and can be attacked. Returns null if no attackable character is found.
-     * @author Michael Galland
-     */
-    public GameCharacter getAttackableTarget() {
+    public Map.Entry<Monster, Point> getAttackableTarget() {
         // Check tiles around (playerX, playerY) for potential targets
-        for (int i = playerX - 1; i <= playerX + 1; i++) {
-            for (int j = playerY - 1; j <= playerY + 1; j++) {
+        for (int i = playerY - 1; i <= playerY + 1; i++) {
+            for (int j = playerX - 1; j <= playerX + 1; j++) {
                 // Check boundaries and ensure it's not the player's position
                 if (i >= 0 && i < grid.length && j >= 0 && j < grid[i].length && !(i == playerX && j == playerY)) {
-                    if (grid[i][j] == 'N') { // Found an NPC which is a potential target
-                        return charactersMap.get(new Point(i, j)); // Return the actual Character object
+                    System.out.println(i + " " + j + " " + grid[i][j]);
+                    if (MONSTER_SYMBOL_COLLECTIONS.indexOf(grid[i][j]) != -1) { // Found an NPC which is a potential target
+                        Point curPoint = new Point(i, j);
+                        return Map.entry((Monster) charactersMap.get(curPoint), curPoint); // Return the actual Character object
                     }
                 }
             }
@@ -338,9 +355,38 @@ public class Board {
         return this.player;
     }
 
+    public void removeMonster(Point value) {
+        int r = value.x;
+        int c = value.y;
+        grid[r][c] = EMPTY_SYMBOL;
+        charactersMap.remove(value);
+    }
 
+    public int countMonster() {
+        int count = 0;
+        for (GameCharacter gameCharacter : charactersMap.values()) {
+            if (gameCharacter instanceof Monster) {
+                count++;
+            }
+        }
+        return count;
+    }
 
+    public void collectGold() {
+        int[][] neighbors = {{-1, 0}, {1, 0}, {0, 1}, {0, -1}};
+        for (int[] neighbor : neighbors) {
+            int newRow = playerY + neighbor[0];
+            int newCol = playerX + neighbor[1];
+            if(isValidMove(newCol, newRow) && grid[newRow][newCol] == GOLD_SYMBOL) {
+                player.earnGold(GOLD_VALUE);
+                grid[newRow][newCol] = EMPTY_SYMBOL;
+            }
+        }
+    }
 
-
-
+    public void buyItem(Item chosenItem) {
+        if(player.spendGold(chosenItem.getCost())) {
+            player.setAttackStrength(getPlayer().getAttackStrength() + chosenItem.getDamage());
+        }
+    }
 }

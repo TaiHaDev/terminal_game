@@ -172,13 +172,21 @@ public class TerminalGame {
         return dimensions;
     }
 
-
+    /**
+     * Handles various interactions within the game based on the provided input.
+     * - For the input 'e', checks for a nearby character and initiates a conversation if the character is an NPC.
+     * - For the input 'r', identifies a target and makes the player attack the target if one is present.
+     *
+     * @param board The game board context within which the interactions are checked and executed.
+     * @param input The character input that represents the type of interaction.
+     * @author Michael Galland
+     */
     private static void handleInteraction(Board board, char input) {
         switch (input) {
             case 'e' -> { // 'E' for interact
                 GameCharacter nearbyCharacter = board.getNearbyCharacter(); // method to get character near the player
                 if (nearbyCharacter instanceof NPC) {
-                    ((NPC) nearbyCharacter).converse(board.getPlayer()); // Note: converse method may not need player now
+                    ((NPC) nearbyCharacter).converse(board.getPlayer());
                 }
             }
             case 'r' -> { // 'R' for attack
@@ -215,6 +223,7 @@ public class TerminalGame {
         }
 
     }
+
 
 
 }

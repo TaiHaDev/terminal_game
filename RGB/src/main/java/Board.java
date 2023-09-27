@@ -207,7 +207,10 @@ public class Board {
                 System.out.println();   // Move cursor to the next line
             }
         }
-        System.out.print(player.getStatInfo());
+        System.out.print(player.getStatInfo()); // print out player stat
+        for (int i = 0; i < grid[0].length / 2; i++) {
+            System.out.print(" ");
+        }
     }
 
     /**
@@ -330,7 +333,6 @@ public class Board {
             for (int j = playerX - 1; j <= playerX + 1; j++) {
                 // Check boundaries and ensure it's not the player's position
                 if (i >= 0 && i < grid.length && j >= 0 && j < grid[i].length && !(i == playerX && j == playerY)) {
-                    System.out.println(i + " " + j + " " + grid[i][j]);
                     if (MONSTER_SYMBOL_COLLECTIONS.indexOf(grid[i][j]) != -1) { // Found an NPC which is a potential target
                         Point curPoint = new Point(i, j);
                         return Map.entry((Monster) charactersMap.get(curPoint), curPoint); // Return the actual Character object
@@ -363,6 +365,9 @@ public class Board {
         return count;
     }
 
+    /**
+     * Collecting
+     */
     public void collectGold() {
         int[][] neighbors = {{-1, 0}, {1, 0}, {0, 1}, {0, -1}};
         for (int[] neighbor : neighbors) {

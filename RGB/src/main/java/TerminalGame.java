@@ -52,7 +52,7 @@ public class TerminalGame {
 
     /**
      *
-     * @param board read teh current board and figure out possible tips that should provided to the user
+     * @param board read teh current board and figure out possible tips that should provide to the user
      */
     public static void checkState(Board board,int pressCount){
         if(board.getPlayer().getHealth() < 50){

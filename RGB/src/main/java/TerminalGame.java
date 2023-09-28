@@ -55,17 +55,19 @@ public class TerminalGame {
     }
 
     /**
-     *
+     * @Author Yansheng Li
+     * @Author Jiale Zhang
      * @param board read teh current board and figure out possible tips that should provide to the user
+     * @param pressCount Count the valid movement and use this to change the tips.
      */
     public static void checkState(Board board,int pressCount){
-        if(board.getPlayer().getHealth() < 50){
+        if(board.getPlayer().getHealth() < 50){//when the character is low in health
             System.out.print("find a merchant to but potion");
         }
-        else if(board.getAttackableTarget() != null){
+        else if(board.getAttackableTarget() != null){//when there are a monster near the character.
             System.out.print("press R to fight the monster");
         }
-        else if (pressCount != 0){
+        else if (pressCount != 0){//change tips when player have a valid input.
             int num = pressCount % 2;
             if (num == 0){
                 System.out.print("kill all monsters to win the game");

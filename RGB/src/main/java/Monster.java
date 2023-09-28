@@ -2,6 +2,8 @@ public class Monster extends GameCharacter {
 
     /**
      * @author Yansheng Li
+     * Represent a Monster in the game
+     * Monsters have different difficulty with different health, attackStrength and reward.
      */
     private int coin;
     public Monster(String name, int health, int attackStrength, int coin) {

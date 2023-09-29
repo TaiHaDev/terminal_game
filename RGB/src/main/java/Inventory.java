@@ -34,7 +34,10 @@ public class Inventory {
         return "item does not exist";
     }
 
-    //add gold
+    /**
+     *
+     * @param num number of gold that want to add to inventory
+     */
     private void addGold(int num) {
         for (Item item : inventory) {
             if (item.getName().equals("gold")) {
@@ -43,7 +46,10 @@ public class Inventory {
         }
     }
 
-    //sell your things
+    /**
+     *
+     * @param sell the item that you want to sell and get gold
+     */
     public void sellItem(Item sell){
         String item_name = sell.getName();
         for(Item item : inventory){
@@ -55,7 +61,11 @@ public class Inventory {
         }
     }
 
-    // method to check if the player is holding a specified key
+    /**
+     *
+     * @param item that item that you want to check
+     * @return true if you get this item in your inventory, otherwise false
+     */
     public boolean youHave(Item item){
         for(int i = 0; i < inventory.size(); i++){
             Item have = inventory.get(i);
@@ -68,6 +78,9 @@ public class Inventory {
         return false;
     }
 
+    /**
+     * print of the inventory into string
+     */
     public static void presentInventory(){
         String s = "";
         for(int i = 0; i < inventory.size(); i++){

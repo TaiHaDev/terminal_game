@@ -4,6 +4,10 @@ public class Inventory {
 
     public static ArrayList<Item> inventory = new ArrayList<>();
 
+    /**
+     *
+     * @return reseted inventory system
+     */
     public String reset(){
         Item sword = new Item("sword", "weapon to kill monsters", 0,10, 0,5);
         Item heal_potion = new Item("healing", "healing 10 hp of the player", 10,0, 0,5);
@@ -14,7 +18,11 @@ public class Inventory {
         return "inventory reset successfully";
     }
 
-    // add Item
+    /**
+     *
+     * @param add the Item that you want to add to the inventory
+     * @return the changed inventory
+     */
     private String addItem(Item add){
         String item_name = add.getName();
         for(Item item : inventory){

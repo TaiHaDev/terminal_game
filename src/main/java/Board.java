@@ -153,7 +153,8 @@ public class Board {
             GameCharacter character = entry.getValue();
 
 
-            if (character instanceof Monster monster) {
+            if (character instanceof Monster ) {
+                Monster monster = (Monster) character;
                 int randomNumber = new Random().nextInt(4);
                 int newRow = curPoint.x;
                 int newCol = curPoint.y;

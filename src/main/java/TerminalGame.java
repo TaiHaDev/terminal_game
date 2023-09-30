@@ -32,16 +32,22 @@ public class TerminalGame {
             checkState(board,pressCount);
             char c = (char) System.in.read();
             switch (c) {
-                case 'q' -> {
+                case 'q' : {
                     resetTerminalToLineMode();
                     return;
                 }
-                case 'A' -> board.movePlayer(0, -1);
-                case 'B' -> board.movePlayer(0, 1);
-                case 'C' -> board.movePlayer(1, 0);
-                case 'D' -> board.movePlayer(-1, 0);
-                case 'p' -> displayShopAndListener(board);
-                case 'c' -> board.collectGold();
+                case 'A' : board.movePlayer(0, -1);
+                break;
+                case 'B' : board.movePlayer(0, 1);
+                break;
+                case 'C' : board.movePlayer(1, 0);
+                break;
+                case 'D' : board.movePlayer(-1, 0);
+                break;
+                case 'p' : displayShopAndListener(board);
+                break;
+                case 'c' : board.collectGold();
+                break;
              }
             handleInteraction(board, c);
             if (operationalMove.indexOf(c) != -1) { // monster only moves on suitable input
@@ -184,13 +190,14 @@ public class TerminalGame {
      */
     private static void handleInteraction(Board board, char input) {
         switch (input) {
-            case 'e' -> { // 'E' for interact
+            case 'e' : { // 'E' for interact
                 GameCharacter nearbyCharacter = board.getNearbyCharacter(); // method to get character near the player
                 if (nearbyCharacter instanceof NPC) {
                     ((NPC) nearbyCharacter).converse(board.getPlayer());
                 }
+                break;
             }
-            case 'r' -> { // 'R' for attack
+            case 'r' : { // 'R' for attack
                 Map.Entry<Monster, Point> entry = board.getAttackableTarget();
                 if (entry == null) break;
                 Monster target = entry.getKey(); // method to get characters that can be attacked
@@ -204,6 +211,7 @@ public class TerminalGame {
                         endGame();
                     }
                 }
+                break;
             }
             // Add cases for other interactions
         }

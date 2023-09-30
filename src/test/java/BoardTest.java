@@ -10,7 +10,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class BoardTest {
 
-    private Board board;
+    private Board board = new Board(100, 100);
 
     @BeforeEach
     public void setUp() {

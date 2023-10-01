@@ -1,10 +1,11 @@
 image: maven:alpine
-
 stages:
   - build
   - test
 java-build:
   # select the most appropriate image for your project
+  tags:
+    - comp2100
   image: maven:3.8.3-openjdk-17
   stage: build
   script:
@@ -34,9 +35,10 @@ maven-test:
       junit:
         - target/surefire-reports/TEST-*.xml
 
-
 docker-build:
   # Use the official docker image.
+  tags:
+    - comp2100
   image: docker:latest
   stage: build
   services:
@@ -45,8 +47,6 @@ docker-build:
     DOCKER_IMAGE_NAME: registry.gitlab.com/my-project:feature-x
   before_script:
     - docker login -u "taidn2003" -p "Taidn_^2003" registry.gitlab.com
-  # All branches are tagged with $DOCKER_IMAGE_NAME (defaults to commit ref slug)
-  # Default branch is also tagged with `latest`
   script:
     - docker build --pull -t "registry.gitlab.com/my-project:feature-x" .
     - docker push "registry.gitlab.com/my-project:feature-x"

@@ -19,6 +19,9 @@ public class Shop {
         return instance;
     }
 
+    /**
+     * reset the item in the shop, now you can buy them again
+     */
     public void refresh(){
         Item sword = new Item("sword", "weapon to kill monsters", 0,20, 0,50);
         Item spear = new Item("spear", "rudimentary weapon to fight against monsters", 0, 10, 0, 25);
@@ -27,10 +30,18 @@ public class Shop {
         shop.add(sword);
         shop.add(gun);
     }
+
+    /**
+     * welcome the customer
+     */
     public void greet() {
         TerminalGame.printOut("Welcome to the shop, we can provide you :" +"\r\n" + present());
     }
 
+    /**
+     *
+     * @return the string of the shop im the terminal
+     */
     public String present(){
         String s = "Code     Name     Amount     Cost";
         s += "\r\n";
@@ -48,10 +59,19 @@ public class Shop {
         return s;
     }
 
+    /**
+     * open the shop by printing it in the terminal
+     */
     public void shopOpen(){
         greet();
         TerminalGame.printOut("press the code of the item that you want or press q to exit");
     }
+
+    /**
+     *
+     * @param index the index of the item you want to buy
+     * @return if code not v alid, return null, else return the item
+     */
     public Item getBoughtItem(int index) {
         if (index >= shop.size()) {
             return null;

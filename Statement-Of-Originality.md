@@ -4,13 +4,12 @@ By signing your name and UID each member of the group acknowledges that all the 
 
 ---
 
-- Group Member 1 Name: Yansheng Li
-- Group Member 1 UID: u6516595
-
+- Group Member 1 Name: Phuoc Ha
+- Group Member 1 UID: u7454578
 ---
 
-- Group Member 2 Name:
-- Group Member 2 UID:
+- Group Member 2 Name: Yansheng Li
+- Group Member 2 UID: u6516595
 
 ---
 

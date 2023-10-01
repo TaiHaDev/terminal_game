@@ -265,7 +265,7 @@ public class Board {
         doorDirections.add(DoorDirection.BOTTOM);
         doorDirections.add(DoorDirection.RIGHT);
         // create room in the middle where player spawns
-        rooms.add(new Room(playerX - 20, playerY - 5, 40 , 10,
+        rooms.add(new Room(playerX - maxWidth / 2, playerY - maxHeight / 2, maxWidth , maxHeight,
                 doorDirections));
         int gridWidth = grid[0].length;
         int gridHeight = grid.length;

@@ -406,6 +406,22 @@ public class Board {
     public char[][] getGrid() {
         return grid;
     }
+
+    public void placeCharacter(GameCharacter character, int i, int i1) {
+        if (character instanceof NPC) {
+            grid[i1][i] = NPC_SYMBOL;
+        } else {
+            Monster monster = (Monster) character;
+            grid[i1][i] = monster.getName().charAt(0);
+        }
+        charactersMap.put(new Point(i1,i), character);
+    }
+
+    public void placePlayer(int i, int i1) {
+        playerY = i1;
+        playerX = i;
+    }
+
     public static class Entry {
         private Monster monster;
         private Point point;

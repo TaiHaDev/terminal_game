@@ -2,14 +2,6 @@ image: maven:alpine
 stages:
   - build
   - test
-java-build:
-  # select the most appropriate image for your project
-  tags:
-    - comp2100
-  image: maven:3.8.3-openjdk-17
-  stage: build
-  script:
-    - mvn package -DskipTests=true
 maven-build:
   tags:
     - comp2100

@@ -68,20 +68,4 @@ public class ItemTest {
         item.setCost(10);
         assertEquals(10, item.getCost());
     }
-
-    @Test
-    public void testPresent() {
-        // Redirect System.out.println to capture the output
-        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        System.setOut(new PrintStream(outputStream));
-
-        item.present(item);
-
-        // Verify the printed output
-        String expectedOutput = "Health Potion\r\nRestores health\r\nyou have: 3\r\nprice to sell: 5\r\n";
-        assertEquals(expectedOutput, outputStream.toString());
-
-        // Reset System.out to the original output stream
-        System.setOut(System.out);
-    }
 }

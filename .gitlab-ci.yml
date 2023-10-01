@@ -15,8 +15,7 @@ maven-build:
       - ~/.m2
 
 maven-test:
-  rules:
-    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+
   tags:
     - comp2100
   stage: test
@@ -25,7 +24,7 @@ maven-test:
     when: always
     reports:
       junit:
-        - target/surefire-reports/TEST-*.xml
+        - build/test-results/test/**/TEST-*.xml
 
 docker-build:
   # Use the official docker image.

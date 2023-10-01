@@ -3,6 +3,7 @@
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -50,11 +51,15 @@ public class BoardTest {
 
     @Test
     public void testApplyRoom() {
-        // Creating a mock room. This assumes a Room constructor and methods for getting properties.
-        Room mockRoom = new Room(10, 10, 10, 10, List.of(DoorDirection.TOP, DoorDirection.LEFT));
-
-        // Applying the room. Note: This assumes applyRoom is made public or at least protected.
-        board.applyRoom(List.of(mockRoom));
+        List<DoorDirection> doorDirections = new ArrayList<>();
+        doorDirections.add(DoorDirection.TOP);
+        doorDirections.add(DoorDirection.LEFT);
+        doorDirections.add(DoorDirection.BOTTOM);
+        doorDirections.add(DoorDirection.RIGHT);
+        Room mockRoom = new Room(10, 10, 10, 10, doorDirections);
+        List<Room> input = new ArrayList<>();
+        input.add(mockRoom);
+        board.applyRoom(input);
 
         // Assert that the room boundaries exist.
         for (int x = mockRoom.getX() + 1; x <= mockRoom.getX() - 1 + mockRoom.getWidth(); x++) {

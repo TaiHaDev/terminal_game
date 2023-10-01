@@ -9,7 +9,7 @@ import java.util.List;
  * @author Phuoc Ha
  */
 public class Board {
-    private char[][] grid = new char[0][];;
+    private char[][] grid = new char[0][];
     private char lastMove = ' ';
     private Map<Point, GameCharacter> charactersMap = new HashMap<>();
     private int playerX;
@@ -259,10 +259,14 @@ public class Board {
      */
     List<Room> generateRandomRooms(int maxRooms, int maxWidth, int maxHeight, int minWidth, int minHeight) {
         List<Room> rooms = new ArrayList<>();
+        List<DoorDirection> doorDirections = new ArrayList<>();
+        doorDirections.add(DoorDirection.TOP);
+        doorDirections.add(DoorDirection.LEFT);
+        doorDirections.add(DoorDirection.BOTTOM);
+        doorDirections.add(DoorDirection.RIGHT);
         // create room in the middle where player spawns
         rooms.add(new Room(playerX - 20, playerY - 5, 40 , 10,
-                List.of(DoorDirection.TOP, DoorDirection.LEFT, DoorDirection.BOTTOM, DoorDirection.RIGHT)));
-
+                doorDirections));
         int gridWidth = grid[0].length;
         int gridHeight = grid.length;
         Random rand = new Random();
@@ -335,7 +339,7 @@ public class Board {
         return null; // no nearby character found
     }
 
-    public Map.Entry<Monster, Point> getAttackableTarget() {
+    public Entry getAttackableTarget() {
         // Check tiles around (playerX, playerY) for potential targets
         for (int i = playerY - 1; i <= playerY + 1; i++) {
             for (int j = playerX - 1; j <= playerX + 1; j++) {
@@ -343,7 +347,7 @@ public class Board {
                 if (i >= 0 && i < grid.length && j >= 0 && j < grid[i].length && !(i == playerX && j == playerY)) {
                     if (MONSTER_SYMBOL_COLLECTIONS.indexOf(grid[i][j]) != -1) { // Found an NPC which is a potential target
                         Point curPoint = new Point(i, j);
-                        return Map.entry((Monster) charactersMap.get(curPoint), curPoint); // Return the actual Character object
+                        return new Entry((Monster) charactersMap.get(curPoint), curPoint); // Return the actual Character object
                     }
                 }
             }
@@ -401,5 +405,30 @@ public class Board {
 
     public char[][] getGrid() {
         return grid;
+    }
+    public static class Entry {
+        private Monster monster;
+        private Point point;
+
+        public Entry(Monster monster, Point point) {
+            this.monster = monster;
+            this.point = point;
+        }
+
+        public Monster getMonster() {
+            return monster;
+        }
+
+        public void setMonster(Monster monster) {
+            this.monster = monster;
+        }
+
+        public Point getPoint() {
+            return point;
+        }
+
+        public void setPoint(Point point) {
+            this.point = point;
+        }
     }
 }

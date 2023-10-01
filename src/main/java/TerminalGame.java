@@ -198,14 +198,14 @@ public class TerminalGame {
                 break;
             }
             case 'r' : { // 'R' for attack
-                Map.Entry<Monster, Point> entry = board.getAttackableTarget();
+                Board.Entry entry = board.getAttackableTarget();
                 if (entry == null) break;
-                Monster target = entry.getKey(); // method to get characters that can be attacked
+                Monster target = entry.getMonster(); // method to get characters that can be attacked
                 if (target != null) {
                     Player player = board.getPlayer();
                     player.fight(target);
                     if (target.getHealth() <= 0) {
-                        board.removeMonster(entry.getValue());
+                        board.removeMonster(entry.getPoint());
                     }
                     if (player.getHealth() <= 0 || board.countMonster() == 0) {
                         endGame();

@@ -35,18 +35,13 @@ docker-build:
   services:
     - docker:dind
   variables:
-    DOCKER_IMAGE_NAME: registry.gitlab.com/my-project:feature-x
+    DOCKER_IMAGE_NAME: roguelike-docker
   before_script:
-    - docker login -u "taidn2003" -p "Taidn_^2003" registry.gitlab.com
+    - docker login -u "taidn2003" -p "Taidn_^2003"
   script:
-    - docker build --pull -t "registry.gitlab.com/my-project:feature-x" .
-    - docker push "registry.gitlab.com/my-project:feature-x"
-    - |
-      if [[ "feature-x" == "main" ]]; then  # Assuming "main" is the default branch
-        docker tag "registry.gitlab.com/my-project:feature-x" "registry.gitlab.com/my-project:latest"
-        docker push "registry.gitlab.com/my-project:latest"
-      fi
-  # Run this job in a branch where a Dockerfile exists
+    - docker build --tag "roguelike-docker" .
+    - docker tag roguelike-docker:latest taidn2003/roguelike-docker:latest
+    - docker push taidn2003/roguelike-docker:latest
   rules:
     - if: $CI_COMMIT_BRANCH
       exists:

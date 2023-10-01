@@ -26,23 +26,23 @@ maven-test:
       junit:
         - build/test-results/test/**/TEST-*.xml
 
-docker-build:
-  # Use the official docker image.
-  tags:
-    - comp2100
-  image: docker:latest
-  stage: build
-  services:
-    - docker:dind
-  variables:
-    DOCKER_IMAGE_NAME: roguelike-docker
-  before_script:
-    - docker login -u "taidn2003" -p "Taidn_^2003"
-  script:
-    - docker build --tag "roguelike-docker" .
-    - docker tag roguelike-docker:latest taidn2003/roguelike-docker:latest
-    - docker push taidn2003/roguelike-docker:latest
-  rules:
-    - if: $CI_COMMIT_BRANCH
-      exists:
-        - Dockerfile
+#docker-build:
+#  # Use the official docker image.
+#  tags:
+#    - comp2100
+#  image: docker:latest
+#  stage: build
+#  services:
+#    - docker:dind
+#  variables:
+#    DOCKER_IMAGE_NAME: roguelike-docker
+#  before_script:
+#    - docker login -u "taidn2003" -p "Taidn_^2003"
+#  script:
+#    - docker build --tag "roguelike-docker" .
+#    - docker tag roguelike-docker:latest taidn2003/roguelike-docker:latest
+#    - docker push taidn2003/roguelike-docker:latest
+#  rules:
+#    - if: $CI_COMMIT_BRANCH
+#      exists:
+#        - Dockerfile
